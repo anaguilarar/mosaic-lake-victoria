@@ -1,0 +1,347 @@
+{
+  "_about": "Chapters for the Story tab of the Uses & studies drawer (site/js/stories.js). Rules: numbers with source.kind='study' are printed in the cited PDF in bibliography/ (page recorded); source.kind='app' numbers are this app's analysis of its own served data (method named, details in DATA_REPORT.md); no causal claims beyond the cited papers; at most two key numbers per chapter and none that the text already states; per-chapter citations live in 'sources' (collapsed in the UI). status='pending' chapters show their placeholder until the named work lands. visual.highlight draws the Nyando river highlight; story labels (Mau, Nyando, Kano plains, Winam Gulf, Kisumu) show whenever the story is open.",
+  "updated": "2026-10-23",
+  "title": "From the Mau to the lake",
+  "chapters": [
+    {
+      "id": "flyin",
+      "title": "From the Mau to the lake",
+      "text": "Lake Victoria's basin gathers rain from highlands in five East African countries - the Mau escarpment among them - and drains it through rivers like the Nyando into the world's second-largest freshwater lake. This story follows that water: the rains, the lake's record levels, the floods, the droughts, and the land the water crosses. Scroll on; the map follows each chapter.",
+      "status": "ready",
+      "visual": {
+        "type": "map",
+        "layers": [],
+        "highlight": true,
+        "camera": {
+          "lng": 34.95,
+          "lat": -0.22,
+          "zoom": 8.6,
+          "pitch": 50
+        }
+      },
+      "numbers": [],
+      "sources": [
+        "Five countries (Kenya, Uganda, Tanzania, Rwanda, Burundi): Mugo et al. (2020), Remote Sensing 12, 2829 · p.1"
+      ]
+    },
+    {
+      "id": "rains",
+      "title": "The short rains of 2019",
+      "text": "Late 2019 brought exceptional rain. On the map, the October-December 2019 rainfall anomaly stands out across the basin; the chart tracks each year's short rains. Khaki & Awange (2021) found the September-November short rains had the dominant effect on the lake's rise that followed, with a strong positive Indian Ocean Dipole identified as the main cause of the above-average rains.",
+      "status": "ready",
+      "visual": {
+        "type": "map",
+        "layers": [
+          "precip"
+        ],
+        "time": {
+          "var": "precip",
+          "season": "ond",
+          "mode": "anomaly",
+          "year": 2019
+        },
+        "camera": {
+          "lng": 32.6,
+          "lat": -1.15,
+          "zoom": 6.65,
+          "pitch": 0
+        },
+        "chart": "ond_totals"
+      },
+      "numbers": [
+        {
+          "value": "658 mm",
+          "label": "OND 2019 basin rainfall, vs a 381 mm OND normal (1991-2020)",
+          "source": {
+            "kind": "app",
+            "method": "CHIRPS v3.0 basin mean, land cells only"
+          }
+        }
+      ],
+      "sources": [
+        "SON 2019 rains dominant; IOD the main driver: Khaki & Awange (2021), Sensors 21, 4304 · abstract p.1; sect. 4.5 p.14"
+      ]
+    },
+    {
+      "id": "lake",
+      "title": "A lake at record levels",
+      "text": "The lake answered within months. Pietroiusti et al. (2024) measure a 1.21 m rise in the six months to 17 May 2020, to a record 13.46 m on the Jinja gauge - a 63-year event in the current climate. The satellite altimetry series in the chart shows the same climb, and a new record in May 2024.",
+      "status": "ready",
+      "visual": {
+        "type": "chart",
+        "chart": "lake_level",
+        "camera": {
+          "lng": 33.0,
+          "lat": -1.0,
+          "zoom": 7,
+          "pitch": 0
+        },
+        "layers": [],
+        "note": "The Jinja gauge (13.46 m) and the satellite series (~1,135 m) use different datums: a local gauge zero versus elevation above sea level."
+      },
+      "numbers": [
+        {
+          "value": "1136.79 m",
+          "label": "altimetry record, 24 May 2024 (water surface elevation)",
+          "source": {
+            "kind": "app",
+            "method": "DAHITI (DGFI-TUM) series served by this app"
+          }
+        }
+      ],
+      "sources": [
+        "1.21 m; 13.46 m on the Jinja gauge; 63-year event: Pietroiusti et al. (2024), ESD 15, 225-264 · abstract p.225; sect. 1.1 p.227 (gauge: sect. 2 p.229); sect. 3.5 p.237"
+      ]
+    },
+    {
+      "id": "flood_extent",
+      "title": "Where the water went",
+      "text": "Around the rising lake, water spread over the floodplains. The map shows the water that Sentinel-1 radar observed at least once between April and July 2020, outside the lake's 2011-2015 extent. In the Nzoia-Yala floodplain and on the Speke Gulf shore it agrees with Pietroiusti et al. (2024). Their additional flooding east of the Speke Gulf head is not confirmed by GFM's algorithms or by JRC Global Surface Water.",
+      "visual": {
+        "layers": [
+          "max_2020"
+        ],
+        "camera": {
+          "lng": 34.05,
+          "lat": 0.05,
+          "zoom": 10,
+          "pitch": 0
+        },
+        "steps": [
+          {
+            "label": "Nzoia–Yala floodplain",
+            "camera": {
+              "lng": 34.05,
+              "lat": 0.05,
+              "zoom": 10,
+              "pitch": 0
+            }
+          },
+          {
+            "label": "Out to the Winam Gulf",
+            "camera": {
+              "lng": 34.55,
+              "lat": -0.2,
+              "zoom": 8.7,
+              "pitch": 0
+            }
+          }
+        ],
+        "note": "≤ 312.3 km² of water outside the 2011–2015 lake within 50 km of the shore (upper bound: measured over 1 Apr–31 Jul 2020, which contains Pietroiusti et al.'s 5 Apr–30 Jun window), against their ~642.5 km². Ours is the GFM ensemble water extent minus a static lake mask; theirs is HASARD flood detections. April 2020 could not be checked optically because of cloud, and part of the area east of the Speke Gulf head is outside GFM's mappable zone.",
+        "comparison_note": "≤ 312.3 km² of water outside the 2011–2015 lake within 50 km of the shore (upper bound: measured over 1 Apr–31 Jul 2020, which contains Pietroiusti et al.'s 5 Apr–30 Jun window), against their ~642.5 km². Ours is the GFM ensemble water extent minus a static lake mask; theirs is HASARD flood detections."
+      },
+      "numbers": [
+        {
+          "value": "≤ 312.3 km²",
+          "label": "water outside the 2011–2015 lake within 50 km of the shore, 2020 (upper bound)",
+          "source": {
+            "kind": "app",
+            "method": "GFM ensemble water extent minus the GLO-30 lake mask, 1 Apr–31 Jul 2020 (contains 5 Apr–30 Jun)"
+          }
+        },
+        {
+          "value": "~642.5 km²",
+          "label": "flooded area within 50 km of the shore, 5 Apr–30 Jun 2020 (HASARD)",
+          "source": {
+            "kind": "study",
+            "citation": "Pietroiusti et al. (2024), ESD 15, 225-264",
+            "page": "sect. 3.2 p.232, fig. 5"
+          }
+        }
+      ],
+      "sources": [
+        "2020 flood map and boxes: Pietroiusti et al. (2024), ESD 15, 225-264 · sect. 3.2 p.232, fig. 5",
+        "Agreement and disagreement by box: DATA_REPORT §3.1 (comparison with Pietroiusti et al. Fig. 5)"
+      ],
+      "swipe_restore": {
+        "type": "swipe",
+        "right": "max_2020",
+        "left_label": "Satellite image 2023–2025 (median)",
+        "right_label": "Water observed Apr–Jul 2020 (GFM, outside the 2011–2015 lake)",
+        "_comment": "Launch version shows max_2020 as a plain map (visual.layers). To restore the swipe (2017/2019 comparison), move these keys back into visual and drop visual.layers."
+      }
+    },
+    {
+      "id": "people",
+      "title": "People in the water's way",
+      "text": "Floods matter because people live on the plains the water takes. Pietroiusti et al. (2024) estimate that more than 29,000 people living within 50 km of the shoreline were affected by flooding between April and July 2020. The map shows the years-flooded record over the Kano plains, where the Nyando meets the gulf.",
+      "visual": {
+        "type": "map",
+        "layers": [
+          "flood_years",
+          "population"
+        ],
+        "camera": {
+          "lng": 34.85,
+          "lat": -0.18,
+          "zoom": 9.4,
+          "pitch": 0
+        },
+        "exposure": {
+          "label": "people living in cells where water was detected in ≥ N years (2016–2025), WorldPop 2020",
+          "note": "Not comparable to Pietroiusti et al.'s >29,000 for 2020: different metric (people in cells ever flooded vs people affected in one event) and period.",
+          "default_n": 1,
+          "n_values": [
+            1,
+            2,
+            3,
+            5
+          ],
+          "source": "series/flood_exposure.json (prep/13_exposure.py); method in DATA_REPORT §2 (Population)"
+        }
+      },
+      "numbers": [],
+      "sources": [
+        ">29,000 people affected within 50 km, Apr-Jul 2020: Pietroiusti et al. (2024), ESD 15, 225-264 · abstract p.225; sect. 3.2 p.232",
+        "People in cells flooded in ≥ N years: this app's analysis, GFM years flooded 2016–2025 × WorldPop 2020 (DATA_REPORT §2, Population)"
+      ]
+    },
+    {
+      "id": "drought",
+      "title": "The other extreme",
+      "text": "The same rains that flood can fail. The figure sets the drenched end of 2019 beside August 2026, when the basin's three-month rainfall ran well below normal. The chart tracks the basin-mean SPI-3 through both floods and the dry spells between them. Liu et al. (2022) modelled the basin's runoff droughts as generally aggravated under the 1985-to-2014 land-cover change, particularly in the central-western and eastern basin.",
+      "status": "ready",
+      "visual": {
+        "type": "figure",
+        "figure": "figures/spi_2019_2026.png",
+        "alt": "SPI-3 maps: December 2019 wet versus August 2026 dry",
+        "chart": "spi3_series",
+        "layers": [
+          "spi3"
+        ],
+        "camera": {
+          "lng": 32.6,
+          "lat": -1.15,
+          "zoom": 6.65,
+          "pitch": 0
+        },
+        "note": "Liu et al. modelled runoff drought (3-month SRI); the app's SPI-3 is rainfall deficit - the two need not match."
+      },
+      "numbers": [
+        {
+          "value": "+1.78 / −1.13",
+          "label": "basin-mean SPI-3, Dec 2019 vs Aug 2026",
+          "source": {
+            "kind": "app",
+            "method": "SPI-3 from CHIRPS v3.0, gamma fit 1991-2020, basin land mean"
+          }
+        }
+      ],
+      "sources": [
+        "Drought aggravated (frequency, duration), central-western and eastern basin: Liu et al. (2022), Ecological Indicators 145, 109580 · abstract p.1; results pp.6, 8; conclusions p.9"
+      ]
+    },
+    {
+      "id": "treecover",
+      "title": "The land the water crosses",
+      "text": "Upstream, the basin's land has been changing. The map shows cumulative tree-cover loss over the Mau and the upper Nyando; the chart counts the basin's loss year by year. Mugo et al. (2020) record the basin's conversion to farmland and settlements between 1985 and 2014: small-scale farmland grew by over 90 %, urban areas by over 800 %.",
+      "status": "ready",
+      "visual": {
+        "type": "map",
+        "layers": [
+          "forest_loss"
+        ],
+        "highlight": true,
+        "camera": {
+          "lng": 35.45,
+          "lat": -0.35,
+          "zoom": 9.3,
+          "pitch": 45
+        },
+        "chart": "forest_loss",
+        "note": "Sub-basins: HydroBASINS units for the Nzoia, Yala, Nyando and Sondu-Miriu (see the data report)."
+      },
+      "numbers": [
+        {
+          "value": "4,866 km²",
+          "label": "tree-cover loss in the basin, 2001-2025 (peak year 2017, 383 km²)",
+          "source": {
+            "kind": "app",
+            "method": "Hansen GFC-2025-v1.13, cover 2000 >= 30 %; loss, not deforestation"
+          }
+        }
+      ],
+      "sources": [
+        "Farmland +90 %, urban +800 %, 1985-2014: Mugo et al. (2020), Remote Sensing 12, 2829 · results p.9; table 2 p.10"
+      ]
+    },
+    {
+      "id": "sediment",
+      "title": "What the rivers carry",
+      "text": "Changed land sends more than water downstream. In the Nyando basin, geochemical fingerprinting of riverbed sediment points to the highland sub-catchments: the Nyando-Kipchorian and Ainamutua together account for most of the sampled sediment mixture, areas the authors describe as affected by cropping on steep slopes and deforestation.",
+      "status": "ready",
+      "visual": {
+        "type": "figure",
+        "figure": "figures/sediment_nyando.png",
+        "alt": "Sediment source shares of the Nyando riverbed mixture",
+        "layers": [
+          "forest_loss"
+        ],
+        "highlight": true,
+        "camera": {
+          "lng": 35.2,
+          "lat": -0.35,
+          "zoom": 8.9,
+          "pitch": 40
+        },
+        "subcatchments": true,
+        "note": "Sub-catchments approximate, derived from HydroSHEDS using the outlet sample sites of Humphrey et al. (2025)."
+      },
+      "numbers": [],
+      "sources": [
+        "Nyando-Kipchorian 44 ± 4 %, Ainamutua 39 ± 4 %, Awach Kano & Nyaidho 17 ± 7 %: Humphrey et al. (2025), Catena 255, 109053 · abstract p.1; sect. 3.2 p.5, fig. 5a"
+      ]
+    },
+    {
+      "id": "gaps",
+      "title": "What we cannot see yet",
+      "text": "Honest maps say where they end. The flood layers are under internal review before external use, and radar cannot assess floods everywhere - dense vegetation and towns hide them. Exposure counts await the approved sub-basins. Water quality is measurable from space in principle, but Warren et al. (2021) used no in-situ data for any of their 24 lakes, Lake Victoria included - field checks would come first.",
+      "status": "ready",
+      "visual": {
+        "type": "map",
+        "layers": [],
+        "camera": {
+          "lng": 32.6,
+          "lat": -1.15,
+          "zoom": 6.65,
+          "pitch": 38
+        }
+      },
+      "numbers": [
+        {
+          "value": "24 lakes",
+          "label": "tuned satellite-to-satellite - no field validation in any of them",
+          "source": {
+            "kind": "study",
+            "citation": "Warren et al. (2021), RSE 265, 112651",
+            "page": "abstract p.1; introduction p.2"
+          }
+        }
+      ],
+      "sources": [
+        "No in-situ validation for any study lake: Warren et al. (2021), RSE 265, 112651 · abstract p.1; introduction p.2"
+      ]
+    },
+    {
+      "id": "explore",
+      "title": "Explore it yourself",
+      "text": "Every layer in this story is in the explorer: years flooded and flood frequency by season, rainfall and drought by month, population, land cover and tree-cover loss, and the lake's full altimetry record. The Studies tab holds the papers behind the numbers.",
+      "status": "ready",
+      "visual": {
+        "type": "map",
+        "layers": [
+          "flood_years"
+        ],
+        "camera": {
+          "lng": 34.6,
+          "lat": -0.25,
+          "zoom": 8.6,
+          "pitch": 30
+        },
+        "action": "explore"
+      },
+      "numbers": [],
+      "sources": []
+    }
+  ]
+}

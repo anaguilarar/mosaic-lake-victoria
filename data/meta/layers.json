@@ -1,0 +1,749 @@
+{
+ "layers": [
+  {
+   "id": "basin",
+   "title": "Lake Victoria Basin boundary",
+   "group": "Base",
+   "type": "vector",
+   "urls": {
+    "boundary": "vectors/basin.geojson",
+    "mask": "vectors/basin_mask.geojson",
+    "lake": "vectors/lake.geojson",
+    "lake_detailed": "vectors/lake_detailed.geojson"
+   },
+   "source": "ICPAC geoportal (geonode:lv_basin), 2019; lake shoreline from the Copernicus GLO-30 water-body mask (2011-2015), class 2 at native ~30 m, islands as holes",
+   "licence": "ICPAC: not specified (confirm before public release); WBM: Copernicus, free with attribution",
+   "caveats": "Lake shoreline from the Copernicus GLO-30 water-body mask (2011-2015); it predates the 2020/2024 high stands.",
+   "citation": "ICPAC Geoportal; Copernicus DEM GLO-30 (ESA/Airbus)"
+  },
+  {
+   "id": "flood_hazard",
+   "title": "Flood hazard (observed flood frequency)",
+   "group": "Flood hazard",
+   "type": "raster",
+   "placeholder": false,
+   "urls": {
+    "years": "tiles/flood_years.pmtiles",
+    "frequency": "tiles/flood_freq.pmtiles",
+    "excluded": "tiles/flood_excl.pmtiles",
+    "query_cog": "query/flood_query_100m.tif",
+    "max_2020": "tiles/max_2020.pmtiles",
+    "max_2024": "tiles/max_2024.pmtiles",
+    "frequency_mam": "tiles/flood_freq_mam.pmtiles",
+    "frequency_ond": "tiles/flood_freq_ond.pmtiles"
+   },
+   "minzoom": 5,
+   "maxzoom": 12,
+   "tile_aggregation": "max (years, frequency, max extents); mode (excluded)",
+   "query": {
+    "aggregation": "max within 100 m",
+    "wording": "flooded in up to {N} of 10 years within 100 m"
+   },
+   "palette": {
+    "type": "sequential-cbsafe",
+    "name": "viridis (stepped)"
+   },
+   "source": "Copernicus EMS Global Flood Monitoring (Sentinel-1), 20 m, 2016-2025",
+   "period": "2016-2025",
+   "units": "band1: years flooded (0-10); band2: % of valid obs; band3: % excluded",
+   "licence": "Copernicus EMS: free with attribution",
+   "citation": "Salamon et al. (2021) IGARSS, doi:10.1109/IGARSS47720.2021.9554214. Contains modified Copernicus EMS information (2016-2025). Hazard proxy, not risk.",
+   "caveats": "Flooded vegetation and urban areas under-detected; short floods between overpasses missed; band 3 shows where SAR cannot map floods."
+  },
+  {
+   "id": "terrain",
+   "title": "Terrain (Copernicus GLO-30)",
+   "group": "Base",
+   "type": "raster-dem",
+   "urls": {
+    "pmtiles": "tiles/terrain.pmtiles"
+   },
+   "encoding": "mapbox",
+   "minzoom": 5,
+   "maxzoom": 11,
+   "exaggeration": {
+    "default": 1.8,
+    "min": 1.0,
+    "max": 4.0
+   },
+   "source": "Copernicus DEM GLO-30 (~30 m), basin extent",
+   "period": "GLO-30 2021 release",
+   "units": "m above sea level",
+   "licence": "Copernicus DEM: free use with attribution",
+   "citation": "ESA (2021). Copernicus DEM GLO-30. Contains modified Copernicus data.",
+   "caveats": "The DEM export is a union of two rectangles; areas outside it (all outside the basin: north-west of 31E/1N, the far south-east and south-west corners) and the 600 km display padding hold synthetic filler. Elevations are neither shown nor queryable anywhere; the basin itself has full real GLO-30 coverage."
+  },
+  {
+   "id": "precip",
+   "title": "Precipitation (CHIRPS v3)",
+   "group": "Climate",
+   "type": "climate",
+   "urls": {
+    "app": "climate/app/",
+    "series": "series/precip_basin.json"
+   },
+   "palette": {
+    "value": "cividis reversed (dry yellow -> wet dark blue)",
+    "anomaly": "BrBG centred 100%"
+   },
+   "source": "CHIRPS v3.0 daily, 0.05 deg. CHIRPS is a pentad product; daily values are pentad totals disaggregated with ECMWF ERA5 precipitation (the 'rnl' flavour).",
+   "period": "1981-2025",
+   "units": "mm",
+   "licence": "CC-BY-4.0",
+   "caveats": "Satellite rainfall over the lake surface is less reliable; basin means use land cells only.",
+   "citation": "Funk et al. (2015), Scientific Data 2:150066; CHIRPS v3.0, UCSB Climate Hazards Center"
+  },
+  {
+   "id": "temperature",
+   "title": "Temperature (CHIRTS-ERA5)",
+   "group": "Climate",
+   "type": "climate",
+   "urls": {
+    "app": "climate/app/",
+    "series": "series/temp_basin.json"
+   },
+   "palette": {
+    "value": "magma",
+    "anomaly": "RdBu centred 0"
+   },
+   "source": "CHIRTS-ERA5 daily Tmax/Tmin, 0.05 deg; Tmean = (Tmax+Tmin)/2",
+   "period": "1981-2025",
+   "units": "degC",
+   "licence": "CC-BY-4.0",
+   "citation": "Funk et al. (2019), J. Climate 32:5639-5658; CHIRTS-ERA5, UCSB CHC"
+  },
+  {
+   "id": "s2_rgb",
+   "title": "Satellite imagery (Sentinel-2)",
+   "group": "Base",
+   "type": "raster",
+   "urls": {
+    "pmtiles": "tiles/s2_rgb.pmtiles"
+   },
+   "minzoom": 5,
+   "maxzoom": 12,
+   "source": "Sentinel-2 L2A median mosaic 2023-2025 (COPERNICUS/S2_SR_HARMONIZED), 30 m",
+   "period": "2023-2025 (median composite)",
+   "units": "true colour (fixed stretch 0-3000, gamma 2.2)",
+   "licence": "Copernicus Sentinel data: free use with attribution",
+   "citation": "Contains modified Copernicus Sentinel-2 data [2023-2025]"
+  },
+  {
+   "id": "lake_level",
+   "title": "Lake water level (satellite altimetry)",
+   "group": "Water",
+   "type": "timeseries-point",
+   "urls": {
+    "series": "series/lake_level.json",
+    "click_target": "vectors/lake.geojson"
+   },
+   "source": "DAHITI (DGFI-TUM), multi-mission altimetry",
+   "period": "1992-10-17 to 2026-09-14",
+   "units": "m WSE",
+   "licence": "CC BY-NC 4.0 (DAHITI terms of use; non-commercial use only)",
+   "attribution": "DAHITI, DGFI-TUM",
+   "citation": "Schwatke, C., Dettmering, D., Bosch, W., Seitz, F. (2015), HESS 19, 4345–4364, doi:10.5194/hess-19-4345-2015"
+  },
+  {
+   "id": "spi3",
+   "title": "Drought index (SPI-3)",
+   "group": "Climate",
+   "type": "climate-monthly",
+   "urls": {
+    "stack": "climate/app/spi3.tif",
+    "cells": "climate/app/spi3_cells.bin",
+    "qc": "climate/app/spi3_qc.tif",
+    "series": "series/spi3_basin.json"
+   },
+   "palette": {
+    "value": "BrBG diverging, centred 0, fixed -3..3 (values clipped to ±3)"
+   },
+   "source": "SPI-3 computed from CHIRPS v3.0 monthly totals (gamma fit, Thom 1958; zero-rain mixed distribution), calibration 1991-2020. Daily CHIRPS = ERA5-disaggregated pentads ('rnl'); monthly totals are unaffected by the disaggregation choice.",
+   "period": "1981-03 to 2026-08",
+   "units": "SPI (unitless)",
+   "licence": "Derived from CHIRPS v3.0 (CC-BY-4.0)",
+   "citation": "McKee, Doesken & Kleist (1993), 8th Conf. Applied Climatology; Funk et al. (2015), Scientific Data 2:150066"
+  },
+  {
+   "id": "rivers",
+   "title": "Rivers (HydroRIVERS)",
+   "group": "Base",
+   "type": "vector",
+   "urls": {
+    "rivers": "vectors/rivers.geojson"
+   },
+   "subbasins": {
+    "status": "pending approval of analysis/flood_frequency/inputs/subbasins.gpkg"
+   },
+   "source": "HydroRIVERS v1.0 (HydroSHEDS), Strahler order >= 4, clipped to the basin",
+   "period": "static (derived from ~2000 SRTM)",
+   "units": "stream order; mean discharge m3/s",
+   "licence": "HydroSHEDS v1 licence (WWF; HydroSHEDS Technical Documentation v1.4, Appendix A). Incorporates data from the HydroSHEDS version 1 database, © World Wildlife Fund, Inc. (2006-2022), used under license; full attribution in the data README",
+   "citation": "Lehner, B. & Grill, G. (2013). Hydrological Processes 27(15):2171-2186; Lehner, B., Verdin, K., Jarvis, A. (2008): New global hydrography derived from spaceborne elevation data. Eos, Transactions, AGU, 89(10): 93-94. www.hydrosheds.org",
+   "caveats": "The Yala main stem (Strahler >= 4) ends at the Yala Swamp, about 6 km from open water; only lower-order swamp channels reach the lake (HydroRIVERS v1.0).",
+   "attribution": "HydroSHEDS-derived layers (rivers, sub-catchments) are included for display in this app only and may not be redistributed separately. © World Wildlife Fund, Inc. (2006-2022), used under licence. This product MOSAIC Lake Victoria Basin Explorer incorporates data from the HydroSHEDS version 1 database which is © World Wildlife Fund, Inc. (2006-2022) and has been used herein under license. WWF has not evaluated the data as altered and incorporated within MOSAIC Lake Victoria Basin Explorer, and therefore gives no warranty regarding its accuracy, completeness, currency or suitability for any particular purpose. Portions of the HydroSHEDS v1 database incorporate data which are the intellectual property rights of © USGS (2006-2008), NASA (2000-2005), ESRI (1992-1998), CIAT (2004-2006), UNEP-WCMC (1993), WWF (2004), Commonwealth of Australia (2007), and Her Royal Majesty and the British Crown and are used under license. The HydroSHEDS v1 database and more information are available at https://www.hydrosheds.org."
+  },
+  {
+   "id": "population",
+   "title": "Population (exposure input)",
+   "group": "Exposure",
+   "type": "raster",
+   "urls": {
+    "pmtiles": "tiles/population.pmtiles",
+    "query_cog": "query/pop_100m.tif"
+   },
+   "minzoom": 5,
+   "maxzoom": 12,
+   "legend": {
+    "scale": "log",
+    "min": 1,
+    "max": 3000,
+    "units": "persons per ~100 m cell"
+   },
+   "source": "WorldPop constrained individual countries 2020, 100 m (KEN, UGA, TZA, RWA, BDI)",
+   "release_note": "2020 constrained (Global 2000-2020, BSGM/maxar): no newer constrained release was found on hub.worldpop.org at build time",
+   "period": "2020",
+   "units": "persons per ~100 m grid cell",
+   "licence": "CC-BY-4.0",
+   "caveats": "Exposure input (people in place), not risk; census-era modelled counts.",
+   "citation": "WorldPop (2020), School of Geography and Environmental Science, University of Southampton. doi:10.5258/SOTON/WP00682"
+  },
+  {
+   "id": "forest_loss",
+   "title": "Tree-cover loss (Hansen GFC)",
+   "group": "Land",
+   "type": "forest",
+   "urls": {
+    "cover": "tiles/treecover2000.pmtiles",
+    "series": "series/forest_loss.json",
+    "epochs": {
+     "2005": "tiles/loss_le_2005.pmtiles",
+     "2010": "tiles/loss_le_2010.pmtiles",
+     "2015": "tiles/loss_le_2015.pmtiles",
+     "2020": "tiles/loss_le_2020.pmtiles",
+     "2025": "tiles/loss_le_2025.pmtiles"
+    }
+   },
+   "minzoom": 5,
+   "maxzoom": 12,
+   "max_year": 2025,
+   "source": "Hansen Global Forest Change GFC-2025-v1.13; loss where tree cover 2000 >= 30 %",
+   "period": "2001-2025",
+   "units": "loss year; cover %",
+   "licence": "CC-BY-4.0",
+   "caveats": "Tree-cover loss, not deforestation; only where cover 2000 >= 30 %; detection improved ~2011-2013, annual values not strictly comparable across the break. Map shows cumulative loss at 5-year epochs (MapLibre cannot style rasters by value); the panel reports exact annual areas.",
+   "citation": "Hansen et al. (2013), Science 342:850-853. Data: UMD/Google/USGS/NASA.",
+   "epochs": [
+    2005,
+    2010,
+    2015,
+    2020,
+    2025
+   ]
+  },
+  {
+   "id": "fire",
+   "title": "Active fires (VIIRS)",
+   "group": "Fire",
+   "type": "fire",
+   "urls": {
+    "density": {
+     "2012": "tiles/fire_density_2012.pmtiles",
+     "2013": "tiles/fire_density_2013.pmtiles",
+     "2014": "tiles/fire_density_2014.pmtiles",
+     "2015": "tiles/fire_density_2015.pmtiles",
+     "2016": "tiles/fire_density_2016.pmtiles",
+     "2017": "tiles/fire_density_2017.pmtiles",
+     "2018": "tiles/fire_density_2018.pmtiles",
+     "2019": "tiles/fire_density_2019.pmtiles",
+     "2020": "tiles/fire_density_2020.pmtiles",
+     "2021": "tiles/fire_density_2021.pmtiles",
+     "2022": "tiles/fire_density_2022.pmtiles",
+     "2023": "tiles/fire_density_2023.pmtiles",
+     "2024": "tiles/fire_density_2024.pmtiles",
+     "2025": "tiles/fire_density_2025.pmtiles"
+    },
+    "points": {
+     "2012": "fire/points_2012.geojson",
+     "2013": "fire/points_2013.geojson",
+     "2014": "fire/points_2014.geojson",
+     "2015": "fire/points_2015.geojson",
+     "2016": "fire/points_2016.geojson",
+     "2017": "fire/points_2017.geojson",
+     "2018": "fire/points_2018.geojson",
+     "2019": "fire/points_2019.geojson",
+     "2020": "fire/points_2020.geojson",
+     "2021": "fire/points_2021.geojson",
+     "2022": "fire/points_2022.geojson",
+     "2023": "fire/points_2023.geojson",
+     "2024": "fire/points_2024.geojson",
+     "2025": "fire/points_2025.geojson"
+    },
+    "series": "series/fire.json"
+   },
+   "years": [
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+   ],
+   "minzoom": 5,
+   "maxzoom": 10,
+   "points_from_zoom": 10,
+   "legend_steps": {
+    "colors": [
+     "#1e1049",
+     "#50127b",
+     "#842681",
+     "#b73779",
+     "#e55064",
+     "#fb8761"
+    ],
+    "breaks": [
+     0.1,
+     0.5,
+     1,
+     2,
+     5,
+     10
+    ],
+    "units": "fires/km2/yr"
+   },
+   "source": "NASA FIRMS VIIRS 375 m active fires; density: S-NPP only (2012-2025); points: S-NPP + NOAA-20 (NOAA-20 archive from 2020); confidence nominal/high",
+   "period": "2012-2025",
+   "units": "fires per km2 per year",
+   "licence": "NASA open data (attribution)",
+   "caveats": "Mostly savanna and crop-residue burning; charcoal production not detected reliably; cloud hides wet-season fires. NOAA-20 only in the point layer.",
+   "citation": "NASA FIRMS; Schroeder et al. (2014), RSE 143:85-96. doi:10.5067/FIRMS/VIIRS/VNP14IMGT"
+  },
+  {
+   "id": "burned_area",
+   "title": "Burned area (MODIS)",
+   "group": "Fire",
+   "type": "burned",
+   "urls": {
+    "tiles": {
+     "2001": "tiles/burned_2001.pmtiles",
+     "2002": "tiles/burned_2002.pmtiles",
+     "2003": "tiles/burned_2003.pmtiles",
+     "2004": "tiles/burned_2004.pmtiles",
+     "2005": "tiles/burned_2005.pmtiles",
+     "2006": "tiles/burned_2006.pmtiles",
+     "2007": "tiles/burned_2007.pmtiles",
+     "2008": "tiles/burned_2008.pmtiles",
+     "2009": "tiles/burned_2009.pmtiles",
+     "2010": "tiles/burned_2010.pmtiles",
+     "2011": "tiles/burned_2011.pmtiles",
+     "2012": "tiles/burned_2012.pmtiles",
+     "2013": "tiles/burned_2013.pmtiles",
+     "2014": "tiles/burned_2014.pmtiles",
+     "2015": "tiles/burned_2015.pmtiles",
+     "2016": "tiles/burned_2016.pmtiles",
+     "2017": "tiles/burned_2017.pmtiles",
+     "2018": "tiles/burned_2018.pmtiles",
+     "2019": "tiles/burned_2019.pmtiles",
+     "2020": "tiles/burned_2020.pmtiles",
+     "2021": "tiles/burned_2021.pmtiles",
+     "2022": "tiles/burned_2022.pmtiles",
+     "2023": "tiles/burned_2023.pmtiles",
+     "2024": "tiles/burned_2024.pmtiles",
+     "2025": "tiles/burned_2025.pmtiles"
+    },
+    "series": "series/fire.json"
+   },
+   "years": [
+    2001,
+    2002,
+    2003,
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+   ],
+   "minzoom": 5,
+   "maxzoom": 10,
+   "source": "MODIS MCD64A1 v6.1 monthly burned area, annual union per ~500 m cell, via Microsoft Planetary Computer",
+   "period": "2001-2025",
+   "units": "burned at least once in the year (0/1)",
+   "licence": "NASA open data (attribution)",
+   "caveats": "~500 m detection misses small/low-intensity burns; cloud limits wet-season detection.",
+   "citation": "Giglio et al. (2018), RSE 217:72-85. doi:10.5067/MODIS/MCD64A1.061",
+   "range_note": "annual burned area in the basin, all years 2001-2025: min 4100 km2 (2017), median 10296 km2, max 15323 km2 (2003)"
+  },
+  {
+   "id": "landcover",
+   "title": "Land cover (Esri/IO annual)",
+   "group": "Land",
+   "type": "lulc",
+   "urls": {
+    "tiles": {
+     "2017": "tiles/lulc_2017.pmtiles",
+     "2018": "tiles/lulc_2018.pmtiles",
+     "2019": "tiles/lulc_2019.pmtiles",
+     "2020": "tiles/lulc_2020.pmtiles",
+     "2021": "tiles/lulc_2021.pmtiles",
+     "2022": "tiles/lulc_2022.pmtiles",
+     "2023": "tiles/lulc_2023.pmtiles"
+    },
+    "query_cog": "query/lulc_stack_30m.tif",
+    "areas": "series/lulc_areas.json",
+    "worldcover": "tiles/worldcover2021.pmtiles"
+   },
+   "years": [
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023
+   ],
+   "classes": {
+    "1": {
+     "name": "Water",
+     "rgb": [
+      65,
+      155,
+      223
+     ]
+    },
+    "2": {
+     "name": "Trees",
+     "rgb": [
+      57,
+      125,
+      73
+     ]
+    },
+    "4": {
+     "name": "Flooded vegetation",
+     "rgb": [
+      122,
+      135,
+      198
+     ]
+    },
+    "5": {
+     "name": "Crops",
+     "rgb": [
+      228,
+      150,
+      53
+     ]
+    },
+    "7": {
+     "name": "Built area",
+     "rgb": [
+      196,
+      40,
+      27
+     ]
+    },
+    "8": {
+     "name": "Bare ground",
+     "rgb": [
+      165,
+      155,
+      143
+     ]
+    },
+    "9": {
+     "name": "Snow/ice",
+     "rgb": [
+      168,
+      235,
+      255
+     ]
+    },
+    "10": {
+     "name": "Clouds",
+     "rgb": [
+      97,
+      97,
+      97
+     ]
+    },
+    "11": {
+     "name": "Rangeland",
+     "rgb": [
+      227,
+      226,
+      195
+     ]
+    }
+   },
+   "minzoom": 5,
+   "maxzoom": 12,
+   "source": "Esri/Impact Observatory annual LULC v2 (10 m; displayed at 30 m, nearest), via Microsoft Planetary Computer (io-lulc-annual-v02)",
+   "period": "2017-2023 (no 2024 release on Planetary Computer at build time, probed 2026-10-21)",
+   "units": "land-cover class",
+   "licence": "CC BY 4.0",
+   "caveats": "Global land-cover products disagree on cropland in sub-Saharan Africa (Kerner et al. 2023); year-to-year change is indicative.",
+   "citation": "Karra et al. (2021), IGARSS; Impact Observatory, Esri, Microsoft."
+  },
+  {
+   "id": "worldcover",
+   "title": "Land cover reference (ESA WorldCover 2021)",
+   "group": "Land",
+   "type": "raster",
+   "urls": {
+    "pmtiles": "tiles/worldcover2021.pmtiles",
+    "query_cog": "query/worldcover_30m.tif"
+   },
+   "classes": {
+    "10": {
+     "name": "Tree cover",
+     "rgb": [
+      0,
+      100,
+      0
+     ]
+    },
+    "20": {
+     "name": "Shrubland",
+     "rgb": [
+      255,
+      187,
+      34
+     ]
+    },
+    "30": {
+     "name": "Grassland",
+     "rgb": [
+      255,
+      255,
+      76
+     ]
+    },
+    "40": {
+     "name": "Cropland",
+     "rgb": [
+      240,
+      150,
+      255
+     ]
+    },
+    "50": {
+     "name": "Built-up",
+     "rgb": [
+      250,
+      0,
+      0
+     ]
+    },
+    "60": {
+     "name": "Bare / sparse vegetation",
+     "rgb": [
+      180,
+      180,
+      180
+     ]
+    },
+    "80": {
+     "name": "Permanent water bodies",
+     "rgb": [
+      0,
+      100,
+      200
+     ]
+    },
+    "90": {
+     "name": "Herbaceous wetland",
+     "rgb": [
+      0,
+      150,
+      160
+     ]
+    },
+    "95": {
+     "name": "Mangroves",
+     "rgb": [
+      0,
+      207,
+      117
+     ]
+    },
+    "100": {
+     "name": "Moss and lichen",
+     "rgb": [
+      250,
+      230,
+      160
+     ]
+    }
+   },
+   "minzoom": 5,
+   "maxzoom": 12,
+   "source": "ESA WorldCover 10 m 2021 v200 (displayed at 30 m, nearest)",
+   "period": "2021",
+   "units": "land-cover class",
+   "licence": "CC BY 4.0",
+   "citation": "Zanaga et al. (2022). ESA WorldCover 10 m 2021 v200. doi:10.5281/zenodo.7254221"
+  },
+  {
+   "id": "osm_labels",
+   "title": "Place names",
+   "group": "Base",
+   "type": "vector",
+   "urls": {
+    "tiles": "tiles/osm_basemap.pmtiles",
+    "glyphs": "fonts/{fontstack}/{range}.pbf"
+   },
+   "minzoom": 0,
+   "maxzoom": 12,
+   "source": "OpenStreetMap via the Protomaps daily basemap (build 2026-10-22, schema v4, Planetiler 0.10.2)",
+   "period": "OSM data as of 2026-10-22",
+   "units": "labels only: countries, cities, towns, villages (from z11), lakes, rivers, protected areas",
+   "licence": "ODbL 1.0 - © OpenStreetMap contributors",
+   "citation": "© OpenStreetMap contributors (openstreetmap.org/copyright). Basemap tiles: Protomaps (protomaps.com). Fonts: Noto Sans (SIL Open Font License) via protomaps/basemaps-assets.",
+   "caveats": "Volunteered geographic information: coverage and spelling vary; label positions are OSM points, not authoritative gazetteer locations."
+  },
+  {
+   "id": "admin_boundaries",
+   "title": "Admin boundaries",
+   "group": "Base",
+   "type": "vector",
+   "urls": {
+    "adm1": "vectors/adm1.geojson",
+    "adm2": "vectors/adm2.geojson",
+    "labels": "vectors/admin_labels.geojson"
+   },
+   "source": "geoBoundaries gbOpen ADM1 + ADM2 (simplified), Kenya, Uganda, Tanzania, Rwanda, Burundi; clipped to the basin",
+   "period": "boundary years vary by country (2006-2021; see provenance)",
+   "units": "ADM1 and ADM2 polygons; names at mid zoom",
+   "licence": "per boundary - see provenance (Public Domain, CC0, CC BY 4.0, CC BY 3.0 IGO, ODbL); geoBoundaries itself CC BY 4.0",
+   "citation": "Runfola, D. et al. (2020) geoBoundaries: A global database of political administrative boundaries. PLoS ONE 15(4): e0231866. doi:10.1371/journal.pone.0231866",
+   "caveats": "Boundaries are indicative and not an official delimitation. Uganda ADM1 is the 4 regions (2017, from OSM) and ADM2 the 2006 counties; Tanzania ADM1 is OSM-derived. Not GADM.",
+   "provenance": [
+    {
+     "country": "Kenya",
+     "level": "ADM1",
+     "type": "Counties",
+     "year": "2020",
+     "source": "RCMRD GeoPortal, Africa GeoPortal",
+     "licence": "Public Domain",
+     "boundaryID": "KEN-ADM1-32016919",
+     "units_in_basin": 20
+    },
+    {
+     "country": "Uganda",
+     "level": "ADM1",
+     "type": "Unknown",
+     "year": "2017",
+     "source": "OpenStreetMap, Wambacher",
+     "licence": "Open Data Commons Open Database License 1.0",
+     "boundaryID": "UGA-ADM1-17295835",
+     "units_in_basin": 3
+    },
+    {
+     "country": "Tanzania",
+     "level": "ADM1",
+     "type": "Regions",
+     "year": "2015",
+     "source": "OpenStreetMap, Wambacher",
+     "licence": "Open Data Commons Open Database License 1.0",
+     "boundaryID": "TZA-ADM1-36957248",
+     "units_in_basin": 8
+    },
+    {
+     "country": "Rwanda",
+     "level": "ADM1",
+     "type": "Province",
+     "year": "2020",
+     "source": "The Rwanda Geo Portal",
+     "licence": "Creative Commons Attribution 4.0 (CC BY 4.0)",
+     "boundaryID": "RWA-ADM1-91480417",
+     "units_in_basin": 5
+    },
+    {
+     "country": "Burundi",
+     "level": "ADM1",
+     "type": "Province",
+     "year": "2014",
+     "source": "geoBoundaries, Wikimedia",
+     "licence": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
+     "boundaryID": "BDI-ADM1-87207978",
+     "units_in_basin": 14
+    },
+    {
+     "country": "Kenya",
+     "level": "ADM2",
+     "type": "Sub-Counties",
+     "year": "2020",
+     "source": "IEBC, OCHA ROSEA",
+     "licence": "Creative Commons Attribution 3.0 Intergovernmental Organisations (CC BY 3.0 IGO)",
+     "boundaryID": "KEN-ADM2-3690345",
+     "units_in_basin": 115
+    },
+    {
+     "country": "Uganda",
+     "level": "ADM2",
+     "type": "Counties",
+     "year": "2006",
+     "source": "geoBoundaries, Wikimedia Commons",
+     "licence": "Public Domain",
+     "boundaryID": "UGA-ADM2-47994165",
+     "units_in_basin": 48
+    },
+    {
+     "country": "Tanzania",
+     "level": "ADM2",
+     "type": "Districts",
+     "year": "2021",
+     "source": "Tanzania National Bureau of Statistics / UN OCHA ROSA, OCHA ROSA",
+     "licence": "Creative Commons Attribution 3.0 Intergovernmental Organisations (CC BY 3.0 IGO)",
+     "boundaryID": "TZA-ADM2-72390352",
+     "units_in_basin": 37
+    },
+    {
+     "country": "Rwanda",
+     "level": "ADM2",
+     "type": "Unknown",
+     "year": "2012",
+     "source": "Open Data Rwanda",
+     "licence": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
+     "boundaryID": "RWA-ADM2-39286606",
+     "units_in_basin": 30
+    },
+    {
+     "country": "Burundi",
+     "level": "ADM2",
+     "type": "Unknown",
+     "year": "2007",
+     "source": "New York University Spatial Data Repository, Stanford University, Map Maker Limited",
+     "licence": "Public Domain",
+     "boundaryID": "BDI-ADM2-21766830",
+     "units_in_basin": 81
+    }
+   ]
+  }
+ ]
+}

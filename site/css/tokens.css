@@ -1,0 +1,43 @@
+/* MOSAIC brand tokens, extracted from https://mosaic-mfl.github.io/website/ on 2026-10-21.
+   Sources: /website/_astro/index.DvvlCefd.css and /website/_astro/about.9PfZ-2qu.css (see STYLE.md
+   for the per-token origin table). Data palettes on the map are NOT brand colours - they stay
+   viridis / cividis / magma / BrBG / RdBu for scientific reading and colour-blind safety. */
+:root {
+  /* colour (site light theme) */
+  --mosaic-teal: #0D5C6B;          /* --color-primary / --color-cgiar-teal */
+  --mosaic-teal-mid: #117A8D;      /* --color-secondary / --color-green-mid */
+  --mosaic-teal-dark: #0A4753;     /* --color-cgiar-teal-dark */
+  --mosaic-teal-light: #D6EEF2;    /* --color-accent-light / --color-cgiar-teal-light */
+  --mosaic-bookend: #085A75;       /* --color-bookend: site header & footer background */
+  --mosaic-sand: #F7F4EF;          /* --color-bg / --color-cream */
+  --mosaic-ink: #1C2B3A;           /* --color-text / --mosaic-ink */
+  --mosaic-grey: #62707A;          /* --color-muted #6B7A85, darkened for 4.5:1 AA on sand/white */
+  --mosaic-border: #E2E0D9;        /* --color-border */
+  --mosaic-white: #FFFFFF;         /* --color-surface / --color-white */
+  --mosaic-amber: #C97D1B;         /* --color-amber / --mosaic-amber */
+  --mosaic-earth: #B54D2F;         /* --color-earth (terracotta) */
+  --mosaic-earth-light: #F5E5DF;   /* --color-earth-light */
+
+  /* status-tag pairs (site dataset-card badges, about.css .badge-* / .status-* / .access-*) */
+  --tag-raw-bg: #ECEAE3;        --tag-raw-ink: #5E6B75;      /* .badge-raw, ink darkened for AA */
+  --tag-review-bg: #FEF3C7;     --tag-review-ink: #92400E;   /* .badge-review / under-review */
+  --tag-restricted-bg: #F7E4DD; --tag-restricted-ink: #AD492D; /* .access-restricted, ink darkened for AA */
+  --tag-validated-bg: #D6EEF2;  --tag-validated-ink: #0D5C6B;  /* .badge-validated */
+  --tag-open-bg: #DCEEDF;       --tag-open-ink: #1F7A4D;       /* .badge-open / access-open */
+
+  /* type (site font stacks) */
+  --mosaic-font-title: Georgia, "Times New Roman", "Noto Serif", serif;      /* --font-title */
+  --mosaic-font-body: Calibri, Candara, "Segoe UI", system-ui, -apple-system,
+                      "Helvetica Neue", Arial, sans-serif;                   /* --font-body */
+  --mosaic-font-mono: "IBM Plex Mono", "Courier New", monospace;             /* --font-mono */
+  --mosaic-text-xs: .75rem;  --mosaic-text-sm: .875rem;  --mosaic-text-base: 1rem;
+  --mosaic-text-lg: 1.125rem; --mosaic-text-xl: 1.25rem; --mosaic-text-2xl: 1.5rem;
+
+  /* spacing / radius / shadow (site scales) */
+  --mosaic-space-1: .25rem; --mosaic-space-2: .5rem; --mosaic-space-3: .75rem;
+  --mosaic-space-4: 1rem;   --mosaic-space-6: 1.5rem; --mosaic-space-8: 2rem;
+  --mosaic-radius-sm: .25rem; --mosaic-radius-md: .5rem; --mosaic-radius-lg: .75rem;
+  --mosaic-radius-card: 1rem; --mosaic-radius-full: 9999px;
+  --mosaic-shadow-card: 0 10px 30px rgba(28, 43, 58, .08);
+  --mosaic-shadow-header: 0 1px 12px rgba(0, 0, 0, .18);
+}

@@ -1,0 +1,7 @@
+# data files are binary: never convert line endings or diff them
+*.pmtiles binary
+*.tif binary
+*.bin binary
+*.pbf binary
+*.png binary
+*.jpg binary

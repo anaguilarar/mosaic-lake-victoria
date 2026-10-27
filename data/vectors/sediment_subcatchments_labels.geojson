@@ -1,0 +1,12 @@
+{
+"type": "FeatureCollection",
+"name": "sediment_subcatchments_labels",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "name": "Ainamutua", "basin": "Nyando", "area_km2": 980.4 }, "geometry": { "type": "Point", "coordinates": [ 35.267170620502569, 0.011272430419949 ] } },
+{ "type": "Feature", "properties": { "name": "Awach Kano & Nyaidho", "basin": "Nyando", "area_km2": 539.9 }, "geometry": { "type": "Point", "coordinates": [ 35.089445745166969, -0.279166666666633 ] } },
+{ "type": "Feature", "properties": { "name": "Kipsonoi", "basin": "Sondu-Miriu", "area_km2": 1570.7 }, "geometry": { "type": "Point", "coordinates": [ 35.141815174248705, -0.62072635226777 ] } },
+{ "type": "Feature", "properties": { "name": "Nyando-Kipchorian", "basin": "Nyando", "area_km2": 1716.4 }, "geometry": { "type": "Point", "coordinates": [ 35.390931864519089, -0.166949886745842 ] } },
+{ "type": "Feature", "properties": { "name": "Yurith", "basin": "Sondu-Miriu", "area_km2": 1567.2 }, "geometry": { "type": "Point", "coordinates": [ 35.308538555658735, -0.451568349202442 ] } }
+]
+}

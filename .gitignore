@@ -1,0 +1,44 @@
+# data: only the files the app serves from GitHub Pages (SITE in site/js/config.js);
+# everything else is on Hugging Face (aaguilar90/mosaic-lake-victoria)
+data/*
+!data/meta/
+!data/series/
+!data/vectors/
+!data/figures/
+!data/fonts/
+!data/climate/
+!data/fire/
+!data/query/
+data/query/*
+!data/query/flood_query_100m.tif
+!data/tiles/
+data/tiles/*
+!data/tiles/s2_rgb.pmtiles
+!data/tiles/osm_basemap.pmtiles
+!data/tiles/terrain.pmtiles
+# never published (ICPAC licence not specified)
+data/vectors/basin.geojson
+data/vectors/basin_mask.geojson
+# GIS formats never served by the app
+*.mbtiles
+*.zip
+*.gpkg
+# pipeline intermediates and caches
+prep/work/
+__pycache__/
+*.pyc
+*.log
+# internal / not for release
+ASSESSMENT.md
+AGENT_ACCESS.md
+DATA_REPORT.master_*.md
+DEPLOYMENT_PLAN.md
+.taste-skill/
+tests/
+# secrets and local settings
+.env
+*.env
+# Windows / Office clutter
+desktop.ini
+Thumbs.db
+~$*

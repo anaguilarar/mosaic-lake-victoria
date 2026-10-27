@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lake Victoria Basin Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.7.3/dist/maplibre-gl.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@maplibre/maplibre-gl-compare@0.5.0/dist/maplibre-gl-compare.css" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+<div class="shell">
+
+  <header class="app-header">
+    <button class="menu-btn" id="menuBtn" aria-label="Menu" aria-expanded="false">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+    </button>
+    <a class="brand" href="https://mosaic-mfl.github.io/website/" title="MOSAIC home">
+      <img src="assets/brand/mosaic-mark-reverse.svg" alt="MOSAIC" width="31" height="20">
+    </a>
+    <h1>Lake Victoria Basin Explorer</h1>
+    <nav class="app-nav" aria-label="MOSAIC">
+      <button class="nav-btn" id="storiesBtn" aria-expanded="false" aria-controls="storiesPanel"><span
+        class="when-wide">Uses &amp; studies</span><span class="when-narrow">Studies</span></button>
+      <a href="https://mosaic-mfl.github.io/website/">MOSAIC</a>
+      <a href="https://mosaic-mfl.github.io/website/catalogue">Catalogue</a>
+    </nav>
+  </header>
+
+  <aside class="sidebar" id="sidebar" aria-label="Layers and information">
+    <p class="finding" id="finding">Terrain, flood hazard, rainfall, drought, population and
+      tree-cover change · 1981–2026</p>
+
+    <nav class="rail" id="rail"><!-- groups built from data/meta/layers.json --></nav>
+
+    <div class="rail-bottom">
+      <div class="exag">
+        <label for="exag">Terrain height <span class="num" id="exagVal">×1.8</span></label>
+        <input type="range" id="exag" min="1" max="4" step="0.1" value="1.8">
+      </div>
+      <button class="btn-text" id="aboutBtn">About &amp; sources</button>
+    </div>
+  </aside>
+
+  <main class="canvas">
+    <div id="map" role="application" aria-label="3D map of the Lake Victoria Basin"></div>
+
+    <div class="legend panel" id="legend" hidden></div>
+    <div class="attrib" id="attrib">Copernicus GLO-30 · Sentinel-2</div>
+    <div class="notice" id="notice" hidden></div>
+
+    <section class="rside panel" id="lakePanel" hidden aria-label="Lake Victoria water level">
+      <header class="rside-head">
+        <div>
+          <h2>Lake Victoria</h2>
+          <p class="meta" id="lakeMeta">Satellite altimetry · DAHITI (DGFI-TUM)</p>
+        </div>
+        <button class="icon-btn" id="lakeClose" aria-label="Close"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8"/></svg></button>
+      </header>
+      <div id="lakeBody"><!-- KPI strip + hydrograph, built from series/lake_level.json --></div>
+    </section>
+
+    <section class="rside panel" id="storiesPanel" hidden aria-label="Uses and studies">
+      <header class="rside-head">
+        <div>
+          <h2 id="storiesH2">Uses &amp; studies</h2>
+          <p class="meta" id="storiesMeta">Questions this app helps answer, with published findings where they exist</p>
+        </div>
+        <button class="icon-btn" id="storiesClose" aria-label="Close"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8"/></svg></button>
+      </header>
+      <div id="storiesBody"></div>
+    </section>
+
+    <section class="rside panel" id="aboutPanel" hidden aria-label="About and sources">
+      <header class="rside-head">
+        <h2>About &amp; sources</h2>
+        <button class="icon-btn" id="aboutClose" aria-label="Close"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8"/></svg></button>
+      </header>
+      <div id="aboutBody"></div>
+    </section>
+
+    <div class="timebar panel" id="timebar" hidden>
+      <div class="seg" id="segVar" role="group" aria-label="Variable">
+        <button data-v="precip" aria-pressed="true">Precip</button>
+        <button data-v="tmean" aria-pressed="false">Tmean</button>
+        <button data-v="tmax" aria-pressed="false">Tmax</button>
+        <button data-v="tmin" aria-pressed="false">Tmin</button>
+      </div>
+      <div class="seg" id="segSeason" role="group" aria-label="Season">
+        <button data-v="annual" aria-pressed="true">Annual</button>
+        <button data-v="mam" aria-pressed="false">MAM</button>
+        <button data-v="ond" aria-pressed="false">OND</button>
+      </div>
+      <div class="seg" id="segMode" role="group" aria-label="Mode">
+        <button data-v="value" aria-pressed="true">Value</button>
+        <button data-v="anomaly" aria-pressed="false">Anomaly</button>
+      </div>
+      <div class="yearbox">
+        <input type="range" id="yearSlider" min="1981" max="2025" step="1" value="2025" aria-label="Year">
+        <span class="num" id="timeLabel"></span>
+      </div>
+    </div>
+
+    <section class="rside panel" id="cellPanel" hidden aria-label="Location details">
+      <header class="rside-head">
+        <div><h2 id="cellTitle">Location</h2><p class="meta" id="cellHint">Click a place on the map with a layer active</p></div>
+        <button class="icon-btn" id="cellClose" aria-label="Close"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8"/></svg></button>
+      </header>
+      <div id="cellBody"></div>
+    </section>
+
+    <div class="popover panel" id="popover" hidden></div>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.7.3/dist/maplibre-gl.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@maplibre/maplibre-gl-compare@0.5.0/dist/maplibre-gl-compare.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pmtiles@3.2.1/dist/pmtiles.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/geotiff@2.1.3/dist-browser/geotiff.js"></script>
+<script src="js/charts.js"></script>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

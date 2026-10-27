@@ -1,0 +1,129 @@
+{
+  "_about": "Registry for the 'Uses & studies' drawer (site/js/stories.js). Rules: every number or claim in a kind='published' card was verified against the cited PDF in bibliography/ on 2026-10-23; 'verified' records where. Only figures stated in the paper - no percentages or values derived from its tables. kind='explore' cards carry a question only - no numbers, no claims.",
+  "updated": "2026-10-23",
+  "stories": [
+    {
+      "id": "rise_2020",
+      "question": "How unusual was the 2020 lake-level rise?",
+      "kind": "published",
+      "finding": "Lake Victoria rose by 1.21 m in the six months to 17 May 2020, reaching a record 13.46 m on the Jinja gauge - a 63-year event in the current climate, estimated 1.8 times as likely (95% CI 0.8-15.8) than in a pre-industrial climate.",
+      "citation": "Pietroiusti et al. (2024), Earth System Dynamics 15, 225-264",
+      "doi": "10.5194/esd-15-225-2024",
+      "verified": [
+        { "claim": "1.21 m rise, Nov 2019 - 17 May 2020 (84% of the 1.44 m Sep 2019 - May 2020 rise); 'record-breaking level of 13.46 m measured in situ on 17 May 2020' - the in-situ record is the Jinja gauge (gauge datum, not metres a.s.l., hence 'on the Jinja gauge' in the finding)", "where": "abstract p.225; sect. 1.1 p.227; in-situ series at Jinja: sect. 2 p.229; sect. 3.3 p.234" },
+        { "claim": "return period 63.2 years (CI 27-395)", "where": "abstract p.225; sect. 3.5 p.237, fig. 11a-b" },
+        { "claim": "probability ratio 1.8 (95% CI 0.8-15.8); CI includes 1", "where": "abstract p.225; sect. 3.7 p.239, fig. 12" }
+      ],
+      "layers": [],
+      "open_panel": "lake",
+      "camera": { "lng": 33.0, "lat": -1.0, "zoom": 7, "pitch": 0 },
+      "caveat": "The confidence interval includes 1, so the attribution to climate change is suggestive, not conclusive - the paper says so itself."
+    },
+    {
+      "id": "rains_2019",
+      "question": "What drove the 2019-2020 rise?",
+      "kind": "published",
+      "finding": "Satellite gravimetry and altimetry put the rise at ~1.4 m. Rainfall in the September-November 2019 short rains had the dominant effect, and a strong positive Indian Ocean Dipole is identified as the main cause of the above-average rains.",
+      "citation": "Khaki & Awange (2021), Sensors 21, 4304",
+      "doi": "10.3390/s21134304",
+      "verified": [
+        { "claim": "~1.4 m rise (1.387 m, mid-2020 vs the same time in 2019)", "where": "abstract p.1; sect. 4 p.8; conclusions p.16" },
+        { "claim": "SON 2019 short rains dominant (MAM 2019 was also above average)", "where": "abstract p.1; fig. 3 caption p.8" },
+        { "claim": "IOD the main driver (precipitation correlation 0.69; ENSO 0.32, NAO 0.27)", "where": "abstract p.1; sect. 4.5 p.14; sect. 5 p.15" }
+      ],
+      "layers": ["precip"],
+      "time": { "var": "precip", "season": "ond", "mode": "anomaly", "year": 2019 },
+      "camera": { "lng": 32.6, "lat": -1.15, "zoom": 6.65, "pitch": 0 }
+    },
+    {
+      "id": "flood_2020_people",
+      "question": "Who was affected by the 2020 floods?",
+      "kind": "published",
+      "finding": "More than 29,000 people living within 50 km of the shoreline are estimated to have been affected by flooding between April and July 2020, over a flooded area of about 642.5 km².",
+      "citation": "Pietroiusti et al. (2024), Earth System Dynamics 15, 225-264",
+      "doi": "10.5194/esd-15-225-2024",
+      "verified": [
+        { "claim": "'more than 29 000 people... affected by floods between April and July 2020' (exact estimate 29,070, stated for Apr-Jun in table 1); 'affected', not displaced", "where": "abstract p.225; sect. 3.2 p.232; table 1 p.235" },
+        { "claim": "flooded area ~642.5 km² within 50 km of the shores, Apr-Jul 2020", "where": "sect. 3.2 p.232, fig. 5" }
+      ],
+      "layers": ["max_2020", "population"],
+      "camera": { "lng": 34.75, "lat": -0.2, "zoom": 9.5, "pitch": 0 },
+      "caveat": "Our GFM flood layer agrees only partly with the paper's flood map - see DATA_REPORT §3.1 for where and why."
+    },
+    {
+      "id": "drought_landuse",
+      "question": "Where did drought risk change as forest became farmland?",
+      "kind": "published",
+      "finding": "SWAT modelling of the basin under its 1985 versus 2014 land cover shows hydrological drought became more frequent and longer-lasting, particularly in the central-western and eastern basin where forest was massively converted to agricultural land. Agriculture grew from about 35 % to 65 % of the basin over that period; grassland shrank from 30 % to 10 %.",
+      "citation": "Liu et al. (2022), Ecological Indicators 145, 109580",
+      "doi": "10.1016/j.ecolind.2022.109580",
+      "verified": [
+        { "claim": "'hydrological drought was generally aggravated with increased drought frequency and lengthened duration, particularly for the central western and eastern regions with massive conversion of forest to agricultural land'", "where": "abstract p.1; results p.6 and p.8; conclusions p.9" },
+        { "claim": "method: SWAT run with the 1985 and 2014 LULC maps; droughts from the 3-month standardized runoff index (SRI <= -1)", "where": "sect. 2-3, pp.3-4" },
+        { "claim": "'the agricultural area increased from approximately 35 % in 1985 to 65 % in 2014'; 'the grassland area decreased from 30 % in 1985 to 10 % in 2014'", "where": "sect. 4.1 p.4, fig. 4" }
+      ],
+      "layers": ["spi3"],
+      "camera": { "lng": 32.6, "lat": -1.15, "zoom": 6.65, "pitch": 0 },
+      "caveat": "The app's SPI-3 shows rainfall deficit; the paper's droughts are runoff droughts (3-month SRI from a model), so the two patterns need not match."
+    },
+    {
+      "id": "lulc_change",
+      "question": "How has land use changed across the basin?",
+      "kind": "published",
+      "finding": "Between 1985 and 2014 forests, woodlands, grasslands and wetlands were converted to farmland and settlements: small-scale farmland grew by over 90%, from about 5.7 to 11.0 million hectares, urban areas grew by over 800%, and open grasslands declined by 41%.",
+      "citation": "Mugo et al. (2020), Remote Sensing 12, 2829",
+      "doi": "10.3390/rs12172829",
+      "verified": [
+        { "claim": "conversion of forests, woodlands, grasslands, wetlands to farmlands or settlements, 1985-2014", "where": "abstract p.1" },
+        { "claim": "small-scale farmlands +'over 90%', 5,656,113.81 ha (1985) to 11,016,723.51 ha (2014); urban +'over 800%'; open grasslands -41%; all as printed (no derived shares)", "where": "results p.9; table 2 p.10" }
+      ],
+      "layers": ["landcover", "forest_loss"],
+      "camera": { "lng": 32.6, "lat": -1.15, "zoom": 6.65, "pitch": 0 },
+      "caveat": "Indicative change only: the app's land-cover layer (Esri/IO LULC, 2017-) is a different product and period than the paper's Landsat classification (1985-2014)."
+    },
+    {
+      "id": "nyando_sediment",
+      "question": "Which sub-catchments supply the Nyando's sediment?",
+      "kind": "published",
+      "finding": "Geochemical fingerprinting of riverbed sediment apportions the Nyando catchment's sediment mixture to the Nyando-Kipchorian (44 ± 4 %) and Ainamutua (39 ± 4 %) sub-catchments - highland areas affected by cropping on steep slopes and deforestation - with 17 ± 7 % from the Awach Kano and Nyaidho.",
+      "citation": "Humphrey et al. (2025), Catena 255, 109053",
+      "doi": "10.1016/j.catena.2025.109053",
+      "verified": [
+        { "claim": "Nyando-Kipchorian 44 ± 4 %, Ainamutua 39 ± 4 %, Awach Kano and Nyaidho 17 ± 7 % of the Nyando riverbed-sediment end-point mixture", "where": "abstract p.1; sect. 3.2 p.5, fig. 5a; conclusions p.12" }
+      ],
+      "layers": ["forest_loss"],
+      "camera": { "lng": 35.3, "lat": -0.2, "zoom": 9.8, "pitch": 45 },
+      "caveat": "These are modelled shares of the riverbed sediment sampled within the Nyando basin, not measured sediment flux to Lake Victoria. Rivers are drawn on the map; the Nyando's headwaters are the highlands in view."
+    },
+    {
+      "id": "water_quality",
+      "question": "Could the app show water quality in the lake?",
+      "kind": "published",
+      "finding": "Chlorophyll-a and turbidity algorithms for Sentinel-2 can be aligned with Sentinel-3 so the two sensors give complementary observations, and Lake Victoria is among the 24 lakes tuned. But the study is satellite-to-satellite: no in-situ measurements were used for any lake, Lake Victoria included.",
+      "citation": "Warren et al. (2021), Remote Sensing of Environment 265, 112651",
+      "doi": "10.1016/j.rse.2021.112651",
+      "verified": [
+        { "claim": "MSI tuned against OLCI; complementary chl-a and turbidity observations; Lake Victoria one of 24 study lakes", "where": "abstract p.1; table 1 p.3; figs. 9-10 p.12; conclusions p.15" },
+        { "claim": "no in-situ validation data for any lake ('large in situ data gaps... prevent direct calibration and validation')", "where": "introduction p.2; abstract p.1" }
+      ],
+      "layers": [],
+      "caveat": "Not in the app yet: a water-quality layer would need this kind of retrieval plus field checks on Lake Victoria."
+    },
+    {
+      "id": "fire_patterns",
+      "question": "Where do fires cluster, and in which season?",
+      "kind": "explore",
+      "layers": ["fire"],
+      "camera": { "lng": 32.6, "lat": -1.15, "zoom": 6.65, "pitch": 0 },
+      "caveat": "No fire study of the basin is in bibliography/ yet - use the layer's year control to look for patterns."
+    },
+    {
+      "id": "burned_extent",
+      "question": "How much land burns in a typical year?",
+      "kind": "explore",
+      "layers": ["burned_area"],
+      "camera": { "lng": 32.6, "lat": -1.15, "zoom": 6.65, "pitch": 0 },
+      "caveat": "No burned-area study of the basin is in bibliography/ yet - the layer's annual totals are a starting point."
+    }
+  ]
+}
