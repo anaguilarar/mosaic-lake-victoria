@@ -724,13 +724,22 @@ function wireUI() {
     $("#aboutPanel").hidden = !show;
   });
   $("#aboutClose").addEventListener("click", () => ($("#aboutPanel").hidden = true));
-  $("#menuBtn").addEventListener("click", () => {
-    const sb = $("#sidebar");
-    sb.classList.toggle("open");
-    $("#menuBtn").setAttribute("aria-expanded", String(sb.classList.contains("open")));
+  /* narrow windows: the layer menu is a drawer. ☰ turns into ✕ while it is open; it also closes on Escape,
+     on a tap on the map, and on a phone after a layer is chosen (so the layer can be seen) */
+  const setMenu = (open) => {
+    $("#sidebar").classList.toggle("open", open);
+    $("#menuBtn").setAttribute("aria-expanded", String(open));
+    $("#menuBtn").setAttribute("aria-label", open ? "Close menu" : "Menu");
+    $("#menuBtn path").setAttribute("d", open ? "M3 3l10 10M13 3L3 13" : "M2 4h12M2 8h12M2 12h12");
+  };
+  $("#menuBtn").addEventListener("click", () => setMenu(!$("#sidebar").classList.contains("open")));
+  map.on("click", () => setMenu(false));
+  $("#rail").addEventListener("click", (e) => {
+    if (e.target.closest(".item") && matchMedia("(max-width: 480px)").matches) setMenu(false);
   });
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
+      setMenu(false);
       for (const id of ["popover", "lakePanel", "aboutPanel", "storiesPanel"]) $("#" + id).hidden = true;
       $("#storiesBtn").setAttribute("aria-expanded", "false");
     }

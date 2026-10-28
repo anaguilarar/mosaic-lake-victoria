@@ -5,7 +5,7 @@ flood hazard, rainfall, drought, population, tree-cover change, land cover and f
 "Uses & studies" drawer: a scroll-driven story ("From the Mau to the lake") and cards summarising published
 studies of the basin.
 
-- **Live app:** `https://<github-user>.github.io/mosaic-lake-victoria/`
+- **Live app:** https://anaguilarar.github.io/mosaic-lake-victoria/site/
 - **Data:** https://huggingface.co/datasets/aaguilar90/mosaic-lake-victoria (served to the app from there)
 - **Data report:** [`DATA_REPORT.md`](DATA_REPORT.md): what each layer is, how it was made, its caveats and
   references.
