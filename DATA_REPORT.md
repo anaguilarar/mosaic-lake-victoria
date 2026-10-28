@@ -188,7 +188,7 @@ derived by combining sources. Chapters that depend on layers still under review 
 **Serengeti–Mara look-alikes (around 34.5° E, 2.2° S), masked.** Over protected grassland in the western Serengeti (10,292 km² zone; 98.8 % grassland in WorldCover 2021), GFM detected water on 3,927 km² in at least one year, away from the main river channels. None of these pixels has ever recorded water in JRC Global Surface Water (Landsat, 1984–2021). The detections peak in near-normal years (2016, 2017, 2025: 2,200–2,650 km²) and almost vanish in 2020 (85 km²), the wettest long rains of the period. Only 1 % of the zone's detections fall in March–May, the main rainy season; 52 % fall in October–December (short rains) and 47 % in the dry months. Real flooding would show the opposite pattern. We therefore treat them as radar look-alikes and show the zone as "Not assessed" for all years; it is excluded from the exposure figures. Similar look-alikes may occur on grassland just outside the zone, where they cannot be separated from real flooding on the Simiyu and Speke Gulf floodplains. In a sample of four 5 × 5 km windows over all 2017 passes (715,104 detection pixels), 82 % of detections came from passes carrying GFM's 'low regional backscatter' advisory flag (40–99.7 % by window).
 
 **Comparison with the published 2020 flood map.** The April–July 2020 extent was compared with Fig. 5 of Pietroiusti et al. (2024), which used LIST's HASARD algorithm alone, box by box.
-- **Area within 50 km of the shore:** ≤ 312.3 km² of water outside the 2011–2015 lake within 50 km of the shore (upper bound: measured over 1 Apr–31 Jul 2020, which contains Pietroiusti et al.'s 5 Apr–30 Jun window), against their ~642.5 km². Ours is the GFM ensemble water extent minus a static lake mask; theirs is HASARD flood detections.
+- **Area within 50 km of the shore:** ≤ 312.3 km² of water outside the 2011–2015 lake within 50 km of the shore (upper bound: measured over 1 Apr–31 Jul 2020, which contains Pietroiusti et al.'s 5 Apr–1 Jul window), against their ~642.5 km². Ours is the GFM ensemble water extent minus a static lake mask; theirs is HASARD flood detections.
 - **Agreement:**
   - The Nzoia–Yala floodplain (box 1) matches.
   - The Speke Gulf shore at the Grumeti–Mbalangeti mouth (box 7) and the Simiyu area (box 8) match in location. All three GFM algorithms detect the flooding there.
@@ -200,7 +200,7 @@ derived by combining sources. Chapters that depend on layers still under review 
 - **Limits of the optical check.** GSW also misses flooding along the gulf shore that all radar algorithms detect, probably flooded vegetation or shallow water. Its May–June coverage rests on only 2–4 usable dates per month. Its absence of water is supporting evidence, not proof.
 - **Panel wording for the 2020 layer:** "Pietroiusti et al. (2024) map additional flooding east of the Speke Gulf head. Neither GFM's algorithms (on mappable land) nor JRC Global Surface Water (May–June 2020) confirm it; April 2020 could not be checked optically because of cloud, and part of the area is outside GFM's mappable zone."
 
-**Box by box, at the figure's resolution** (this app's analysis). Ours: Apr–Jul 2020 (GFM, definition C, masked); Fig. 5: 5 Apr–30 Jun 2020 (HASARD). Our window is longer, so differences in the 'we show more' direction are partly expected. Both sides exclude the 2011–2015 lake. Pixel counts are figure pixels (~0.43 km² each); “a / b” = % of Fig. 5 pixels we also flag / % of our pixels Fig. 5 also flags.
+**Box by box, at the figure's resolution** (this app's analysis). Ours: Apr–Jul 2020 (GFM, definition C, masked); Fig. 5: 5 Apr–1 Jul 2020 (HASARD). Our window is longer, so differences in the 'we show more' direction are partly expected. Both sides exclude the 2011–2015 lake. Pixel counts are figure pixels (~0.43 km² each); “a / b” = % of Fig. 5 pixels we also flag / % of our pixels Fig. 5 also flags.
 
 | Box | Ours, km² (20 m) | Figure pixels: Fig. 5 only / ours only / both | Strict a / b (%) | ±1 px a / b (%) | Class¹ |
 |---|---|---|---|---|---|
@@ -238,12 +238,15 @@ The Standardized Precipitation Index (McKee et al. 1993) shows how unusual rainf
 3. **Standardisation.** The cumulative probability of each total is converted to a standard normal value, and the result is limited to ±3.
 4. **Reading the values.**
 
-   | SPI | Meaning |
+   | SPI | Class (WMO 2012) |
    |---|---|
-   | ≤ −1 | Moderately dry |
-   | ≤ −1.5 | Severely dry |
-   | ≤ −2 | Extremely dry |
-   | Positive | Wetter than normal |
+   | ≥ 2.0 | Extremely wet |
+   | 1.5 to 1.99 | Very wet |
+   | 1.0 to 1.49 | Moderately wet |
+   | −0.99 to 0.99 | Near normal |
+   | −1.0 to −1.49 | Moderately dry |
+   | −1.5 to −1.99 | Severely dry |
+   | ≤ −2.0 | Extremely dry |
 
    SPI is relative to each cell's own normal for that season. A dry season can therefore show strongly negative SPI even though it is normally dry.
 5. **Quality checks.**
@@ -268,6 +271,7 @@ The Standardized Precipitation Index (McKee et al. 1993) shows how unusual rainf
 - Chini, M., Hostache, R., Giustarini, L., Matgen, P. (2017). A hierarchical split-based approach for parametric thresholding of SAR images: flood inundation as a test case. *IEEE Transactions on Geoscience and Remote Sensing* 55(12), 6975–6988.
 - McKee, T.B., Doesken, N.J., Kleist, J. (1993). The relationship of drought frequency and duration to time scales. *8th Conference on Applied Climatology*, Anaheim, CA, 179–184.
 - Thom, H.C.S. (1958). A note on the gamma distribution. *Monthly Weather Review* 86, 117–122.
+- WMO (2012). *Standardized Precipitation Index User Guide* (M. Svoboda, M. Hayes, D. Wood). WMO-No. 1090, World Meteorological Organization, Geneva.
 
 **Data sources**
 - Copernicus DEM GLO-30, ESA (2021). Contains modified Copernicus data.

@@ -7,7 +7,7 @@ import * as land from "./land.js";
 import * as stories from "./stories.js";
 import * as thematic from "./thematic.js";
 
-import { dataUrl } from "./config.js";
+import { dataUrl, isWithheld } from "./config.js";
 import { split as splitLazy, setVisibility } from "./layers.js";
 const TILE_V = "13";   // bump to defeat stale HTTP caches after tile rebuilds
 const fmtCoord = (lat, lng) =>
@@ -98,9 +98,9 @@ window.addEventListener("unhandledrejection", (e) => notice("Error: " + (e.reaso
   const regUrls = state.registry.flood_hazard?.urls || {};
   const probeList = ["tiles/terrain.pmtiles", "tiles/s2_rgb.pmtiles", "series/lake_level.json",
                      "vectors/rivers.geojson", "vectors/lake_detailed.geojson", "tiles/worldcover2021.pmtiles",
-                     "tiles/osm_basemap.pmtiles",
+                     "tiles/osm_basemap.pmtiles", "vectors/basin.geojson", "vectors/basin_mask.geojson",
                      ...OVERLAYS.filter((o) => !o.id.startsWith("max_") && o.type !== "thematic").map((o) => o.file)];
-  await Promise.all(probeList.map(async (f) => { have[f] = await exists(dataUrl(f)); }));
+  await Promise.all(probeList.map(async (f) => { have[f] = !isWithheld(f) && await exists(dataUrl(f)); }));
   for (const o of OVERLAYS) {
     if (o.id.startsWith("max_")) have[o.file] = Boolean(regUrls[o.id]);   // registry-driven: no 404 probes
   }
@@ -399,9 +399,14 @@ function initMap() {
   const protocol = new pmtiles.Protocol();
   maplibregl.addProtocol("pmtiles", protocol.tile);
 
+  /* the basin outline and mask (ICPAC boundary) are not published: when the files are absent the two sources
+     stay empty, so nothing is requested, while the "basin-line" and "dim" layers remain as anchors that
+     climate.js (insert before "dim") and compare.js rely on */
+  const EMPTY = { type: "FeatureCollection", features: [] };
+  const optional = (f) => (state.have[f] ? dataUrl(f) : EMPTY);
   const sources = {
-    basin: { type: "geojson", data: dataUrl("vectors/basin.geojson") },
-    mask: { type: "geojson", data: dataUrl("vectors/basin_mask.geojson") },
+    basin: { type: "geojson", data: optional("vectors/basin.geojson") },
+    mask: { type: "geojson", data: optional("vectors/basin_mask.geojson") },
     lake: { type: "geojson", data: dataUrl("vectors/lake.geojson") },
   };
   if (state.have["vectors/lake_detailed.geojson"]) {

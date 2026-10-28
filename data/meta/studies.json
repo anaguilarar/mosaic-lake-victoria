@@ -32,6 +32,7 @@
         { "claim": "IOD the main driver (precipitation correlation 0.69; ENSO 0.32, NAO 0.27)", "where": "abstract p.1; sect. 4.5 p.14; sect. 5 p.15" }
       ],
       "layers": ["precip"],
+      "caveat": "This app's short-rains season is October–December; Khaki & Awange used September–November.",
       "time": { "var": "precip", "season": "ond", "mode": "anomaly", "year": 2019 },
       "camera": { "lng": 32.6, "lat": -1.15, "zoom": 6.65, "pitch": 0 }
     },
@@ -39,16 +40,16 @@
       "id": "flood_2020_people",
       "question": "Who was affected by the 2020 floods?",
       "kind": "published",
-      "finding": "More than 29,000 people living within 50 km of the shoreline are estimated to have been affected by flooding between April and July 2020, over a flooded area of about 642.5 km².",
+      "finding": "More than 29,000 people living within 50 km of the shoreline are estimated to have been affected by flooding over 5 Apr–1 Jul 2020, the paper's radar window, over a flooded area of about 642.5 km².",
       "citation": "Pietroiusti et al. (2024), Earth System Dynamics 15, 225-264",
       "doi": "10.5194/esd-15-225-2024",
       "verified": [
         { "claim": "'more than 29 000 people... affected by floods between April and July 2020' (exact estimate 29,070, stated for Apr-Jun in table 1); 'affected', not displaced", "where": "abstract p.225; sect. 3.2 p.232; table 1 p.235" },
-        { "claim": "flooded area ~642.5 km² within 50 km of the shores, Apr-Jul 2020", "where": "sect. 3.2 p.232, fig. 5" }
+        { "claim": "flooded area ~642.5 km² within 50 km of the shores; SAR window 5 April 2020-1 July 2020", "where": "window: methods sect. 2.1.1 p.228; area: sect. 3.2 p.232, fig. 5 p.237" }
       ],
       "layers": ["max_2020", "population"],
       "camera": { "lng": 34.75, "lat": -0.2, "zoom": 9.5, "pitch": 0 },
-      "caveat": "Our GFM flood layer agrees only partly with the paper's flood map - see DATA_REPORT §3.1 for where and why."
+      "caveat": "Our GFM flood layer agrees only partly with the paper's flood map - see DATA_REPORT §3.1 for where and why. The paper's text also calls this window April–July (sect. 3.2) and April–June (Fig. 5)."
     },
     {
       "id": "drought_landuse",

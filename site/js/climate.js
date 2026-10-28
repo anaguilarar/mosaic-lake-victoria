@@ -22,9 +22,12 @@ export const VARS = {
   spi3: { title: "Drought index (SPI-3)", vars: ["spi3"], monthly: true, units: "SPI",
           source: "SPI-3 from CHIRPS v3.0" },
 };
-const SPI_CATS = [[-2, "extreme drought"], [-1.5, "severe drought"], [-1, "moderate drought"],
-                  [1, "near normal"], [1.5, "moderately wet"], [2, "very wet"], [99, "extremely wet"]];
-const spiCat = (v) => SPI_CATS.find(([t]) => v <= t)[1];
+/* SPI classes of WMO (2012), as in DATA_REPORT §3.2 (the index itself: McKee et al. 1993): <= -2.0 extremely dry, -1.5 to -1.99 severely dry,
+   -1.0 to -1.49 moderately dry, -0.99 to 0.99 near normal, 1.0 to 1.49 moderately wet, 1.5 to 1.99 very wet,
+   >= 2.0 extremely wet (values are stored to 0.01) */
+const spiCat = (v) => (v <= -2 ? "extremely dry" : v <= -1.5 ? "severely dry" : v <= -1 ? "moderately dry"
+  : v < 1 ? "near normal" : v < 1.5 ? "moderately wet" : v < 2 ? "very wet" : "extremely wet");
+const SPI_PROVISIONAL = 3;   // the latest CHIRPS months, revised as station data arrive
 function spiMonths() {
   const n = state.meta.months_spi3.n, parts = state.meta.months_spi3.start.split("-").map(Number);
   return Array.from({ length: n }, (_, i) => {
@@ -164,7 +167,7 @@ async function refreshMonthly() {
   const stack = await loadTif("spi3.tif");
   if (state.active !== "spi3") return;      // switched layer while the stack loaded: stale draw
   drawRaster(stack.bands[state.month], -3, 3, RAMPS.precip_anom, 0.01);   // SPI stored x100
-  const prov = state.month >= months.length - 3 ? " · provisional" : "";
+  const prov = state.month >= months.length - SPI_PROVISIONAL ? " · provisional" : "";
   $("#timeLabel").innerHTML = `<strong>${months[state.month]}</strong> · SPI-3${prov}`;
   const box = $("#legend");
   box.innerHTML = "";
@@ -176,6 +179,11 @@ async function refreshMonthly() {
   const axis = document.createElement("div"); axis.className = "axis";
   axis.innerHTML = "<span>−3 dry</span><span>+3 wet</span>"; box.append(axis);
   const src = document.createElement("p"); src.className = "src";
+  const cls = document.createElement("p"); cls.className = "src";
+  cls.textContent = "≤ −2.0 extremely dry · −1.5 to −1.99 severely dry · −1.0 to −1.49 moderately dry · " +
+    "−0.99 to 0.99 near normal (WMO 2012)"; box.append(cls);
+  const pv = document.createElement("p"); pv.className = "src";
+  pv.textContent = `${months.at(-SPI_PROVISIONAL)} to ${months.at(-1)}: provisional (latest CHIRPS months, may be revised)`; box.append(pv);
   src.textContent = "Gamma fit (Thom), calibration 1991–2020 · CHIRPS v3.0 · 0.05°"; box.append(src);
   box.hidden = false;
   if (state.cell) showCellSpi(state.cell.lngLat, false);
@@ -207,7 +215,7 @@ async function showCellSpi(lngLat, open = true) {
   const normalMm = qc.bands[calMonth][idx] / 10;
   const q0pct = qc.bands[12 + calMonth][idx] / 10;
   const lowNormal = normalMm < 30 || q0pct > 20;
-  const provisional = state.month >= months.length - 3;
+  const provisional = state.month >= months.length - SPI_PROVISIONAL;
   const kpis = document.createElement("div"); kpis.className = "kpis";
   kpis.innerHTML = `
     <div class="lead"><div class="label">SPI-3 · ${months[state.month]}${provisional ? " (provisional)" : ""}</div>
@@ -239,6 +247,9 @@ async function showCellSpi(lngLat, open = true) {
     series: [{ name: "this cell", values: Array.from(cell.slice(k0)).map(val) },
              { name: "basin mean", values: basin.slice(k0), colour: "#8a8a8a" }],
     legend: lg,
+    // the provisional months are dashed, after a marker, and named in the tooltip
+    today: n - k0 - 1 - SPI_PROVISIONAL, todayLabel: "provisional",
+    tipLabels: months.slice(k0).map((m, i) => m + (k0 + i >= n - SPI_PROVISIONAL ? " · provisional" : "")),
   });
   const meta = document.createElement("p"); meta.className = "meta";
   meta.textContent = "SPI-3 from CHIRPS v3.0 · gamma fit (Thom 1958), zero-rain mixed distribution";

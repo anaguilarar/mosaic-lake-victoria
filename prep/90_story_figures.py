@@ -4,7 +4,7 @@ Figures (white background, thin spines, Arial, no chartjunk):
     spi_2019_2026:  SPI-3 side by side, Dec 2019 (the OND 2019 short rains) vs Aug 2026 (latest),
                     from data/climate/app/spi3.tif (int16 = SPI x 100, bands described by month),
                     the app's own BrBG ramp and -3..+3 range (climate.js RAMPS.precip_anom),
-                    basin outline, shared horizontal colourbar.
+                    lake masked (CHIRPS land mask), no basin outline, shared horizontal colourbar.
     sediment_nyando: Humphrey et al. (2025) sediment source apportionment of the Nyando basin
                     (44/39/17 % as printed, abstract p.1 and sect. 3.2 p.5, fig. 5a),
                     horizontal bars with the +/- sd whiskers.
@@ -43,16 +43,9 @@ def spi_band(src, ym):
     return src.descriptions.index(ym) + 1   # bands are described by month ('2019-12')
 
 
-def basin_ring():
-    gj = json.load(open(DATA / "vectors" / "basin.geojson"))
-    geom = gj["features"][0]["geometry"]
-    rings = geom["coordinates"] if geom["type"] == "Polygon" else [r for p in geom["coordinates"] for r in p]
-    return [np.asarray(r) for r in rings]
-
-
 def fig_spi():
     meta = json.load(open(DATA / "climate" / "app" / "app_meta.json"))
-    months = [("2019-12", "SPI-3 · Dec 2019 (OND short rains)"), ("2026-08", "SPI-3 · Aug 2026 (latest)")]
+    months = [("2019-12", "SPI-3 · Dec 2019 (OND short rains)"), ("2026-08", "SPI-3 · Aug 2026 (latest, provisional)")]
     w, s_, e, n = meta["bbox"][0], meta["bbox"][1], meta["bbox"][2], meta["bbox"][3]
     fig, axes = plt.subplots(1, 2, figsize=(6.2, 3.0), constrained_layout=True)
     with rasterio.open(DATA / "climate" / "app" / "landmask.tif") as lm:
@@ -64,8 +57,7 @@ def fig_spi():
             a[land == 20] = np.nan                 # lake out (landmask 20 = water): satellite rainfall is less reliable there
             a *= 0.01                              # int16 = SPI x 100, clamped at +/-300
             im = ax.imshow(a, extent=(w, e, s_, n), cmap="BrBG", vmin=-3, vmax=3, interpolation="nearest")
-            for r in basin_ring():
-                ax.plot(r[:, 0], r[:, 1], color=INK, lw=0.6)
+            # no basin outline: the ICPAC boundary is not published (licence not specified)
             ax.set_title(title, fontsize=10, color=INK)
             ax.set_aspect("equal")
             ax.set_xticks([30, 32, 34]); ax.set_yticks([-4, -2, 0])

@@ -22,3 +22,8 @@ const allLocal = choice === "local" || (choice !== "hf" && isLocal);
 const onSite = (path) => SITE.some((s) => (s.endsWith("/") ? path.startsWith(s) : path === s));
 
 export const dataUrl = (path) => (allLocal || onSite(path) ? LOCAL_DATA : HF_DATA) + path;
+
+/* never published (ICPAC basin boundary, licence not specified): with the published routing the app treats
+   them as absent without requesting them, so the public site logs no 404s; locally they are probed as usual */
+const WITHHELD = ["vectors/basin.geojson", "vectors/basin_mask.geojson"];
+export const isWithheld = (path) => !allLocal && WITHHELD.includes(path);

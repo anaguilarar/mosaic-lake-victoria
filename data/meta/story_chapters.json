@@ -27,7 +27,7 @@
     {
       "id": "rains",
       "title": "The short rains of 2019",
-      "text": "Late 2019 brought exceptional rain. On the map, the October-December 2019 rainfall anomaly stands out across the basin; the chart tracks each year's short rains. Khaki & Awange (2021) found the September-November short rains had the dominant effect on the lake's rise that followed, with a strong positive Indian Ocean Dipole identified as the main cause of the above-average rains.",
+      "text": "Late 2019 brought exceptional rain. On the map, the October-December 2019 rainfall anomaly stands out across the basin; the chart tracks each year's short rains. Khaki & Awange (2021) found the September-November short rains had the dominant effect on the lake's rise that followed, with a strong positive Indian Ocean Dipole identified as the main cause of the above-average rains. This app's short-rains season is October–December; Khaki & Awange used September–November.",
       "status": "ready",
       "visual": {
         "type": "map",
@@ -127,8 +127,8 @@
             }
           }
         ],
-        "note": "≤ 312.3 km² of water outside the 2011–2015 lake within 50 km of the shore (upper bound: measured over 1 Apr–31 Jul 2020, which contains Pietroiusti et al.'s 5 Apr–30 Jun window), against their ~642.5 km². Ours is the GFM ensemble water extent minus a static lake mask; theirs is HASARD flood detections. April 2020 could not be checked optically because of cloud, and part of the area east of the Speke Gulf head is outside GFM's mappable zone.",
-        "comparison_note": "≤ 312.3 km² of water outside the 2011–2015 lake within 50 km of the shore (upper bound: measured over 1 Apr–31 Jul 2020, which contains Pietroiusti et al.'s 5 Apr–30 Jun window), against their ~642.5 km². Ours is the GFM ensemble water extent minus a static lake mask; theirs is HASARD flood detections."
+        "note": "≤ 312.3 km² of water outside the 2011–2015 lake within 50 km of the shore (upper bound: measured over 1 Apr–31 Jul 2020, which contains Pietroiusti et al.'s 5 Apr–1 Jul window), against their ~642.5 km². Ours is the GFM ensemble water extent minus a static lake mask; theirs is HASARD flood detections. April 2020 could not be checked optically because of cloud, and part of the area east of the Speke Gulf head is outside GFM's mappable zone.",
+        "comparison_note": "≤ 312.3 km² of water outside the 2011–2015 lake within 50 km of the shore (upper bound: measured over 1 Apr–31 Jul 2020, which contains Pietroiusti et al.'s 5 Apr–1 Jul window), against their ~642.5 km². Ours is the GFM ensemble water extent minus a static lake mask; theirs is HASARD flood detections."
       },
       "numbers": [
         {
@@ -136,21 +136,21 @@
           "label": "water outside the 2011–2015 lake within 50 km of the shore, 2020 (upper bound)",
           "source": {
             "kind": "app",
-            "method": "GFM ensemble water extent minus the GLO-30 lake mask, 1 Apr–31 Jul 2020 (contains 5 Apr–30 Jun)"
+            "method": "GFM ensemble water extent minus the GLO-30 lake mask, 1 Apr–31 Jul 2020 (contains 5 Apr–1 Jul)"
           }
         },
         {
           "value": "~642.5 km²",
-          "label": "flooded area within 50 km of the shore, 5 Apr–30 Jun 2020 (HASARD)",
+          "label": "flooded area within 50 km of the shore, 5 Apr–1 Jul 2020 (HASARD)",
           "source": {
             "kind": "study",
             "citation": "Pietroiusti et al. (2024), ESD 15, 225-264",
-            "page": "sect. 3.2 p.232, fig. 5"
+            "page": "window: sect. 2.1.1 p.228; area: sect. 3.2 p.232, fig. 5 p.237"
           }
         }
       ],
       "sources": [
-        "2020 flood map and boxes: Pietroiusti et al. (2024), ESD 15, 225-264 · sect. 3.2 p.232, fig. 5",
+        "2020 flood map and boxes (SAR window 5 Apr–1 Jul 2020): Pietroiusti et al. (2024), ESD 15, 225-264 · sect. 2.1.1 p.228; sect. 3.2 p.232; fig. 5 p.237",
         "Agreement and disagreement by box: DATA_REPORT §3.1 (comparison with Pietroiusti et al. Fig. 5)"
       ],
       "swipe_restore": {
@@ -164,7 +164,7 @@
     {
       "id": "people",
       "title": "People in the water's way",
-      "text": "Floods matter because people live on the plains the water takes. Pietroiusti et al. (2024) estimate that more than 29,000 people living within 50 km of the shoreline were affected by flooding between April and July 2020. The map shows the years-flooded record over the Kano plains, where the Nyando meets the gulf.",
+      "text": "Floods matter because people live on the plains the water takes. Pietroiusti et al. (2024) estimate that more than 29,000 people living within 50 km of the shoreline were affected by flooding over 5 Apr–1 Jul 2020. The map shows the years-flooded record over the Kano plains, where the Nyando meets the gulf.",
       "visual": {
         "type": "map",
         "layers": [
@@ -192,14 +192,14 @@
       },
       "numbers": [],
       "sources": [
-        ">29,000 people affected within 50 km, Apr-Jul 2020: Pietroiusti et al. (2024), ESD 15, 225-264 · abstract p.225; sect. 3.2 p.232",
+        ">29,000 people affected within 50 km, 5 Apr–1 Jul 2020: Pietroiusti et al. (2024), ESD 15, 225-264 · window: methods sect. 2.1.1 p.228; number: sect. 3.2 p.232 (the abstract, p.225, says \"between April and July\")",
         "People in cells flooded in ≥ N years: this app's analysis, GFM years flooded 2016–2025 × WorldPop 2020 (DATA_REPORT §2, Population)"
       ]
     },
     {
       "id": "drought",
-      "title": "The other extreme",
-      "text": "The same rains that flood can fail. The figure sets the drenched end of 2019 beside August 2026, when the basin's three-month rainfall ran well below normal. The chart tracks the basin-mean SPI-3 through both floods and the dry spells between them. Liu et al. (2022) modelled the basin's runoff droughts as generally aggravated under the 1985-to-2014 land-cover change, particularly in the central-western and eastern basin.",
+      "title": "When the rains run short",
+      "text": "The same rains that flood can fail. The figure sets the drenched end of 2019 beside August 2026, when the basin's three-month rainfall was moderately dry (basin-mean SPI-3 −1.13, June–August; provisional). The chart tracks the basin-mean SPI-3 through both floods and the dry spells between them. Liu et al. (2022) modelled the basin's runoff droughts as generally aggravated under the 1985-to-2014 land-cover change, particularly in the central-western and eastern basin.",
       "status": "ready",
       "visual": {
         "type": "figure",

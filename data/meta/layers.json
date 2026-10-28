@@ -162,7 +162,7 @@
    "period": "1981-03 to 2026-08",
    "units": "SPI (unitless)",
    "licence": "Derived from CHIRPS v3.0 (CC-BY-4.0)",
-   "citation": "McKee, Doesken & Kleist (1993), 8th Conf. Applied Climatology; Funk et al. (2015), Scientific Data 2:150066"
+   "citation": "McKee, Doesken & Kleist (1993), 8th Conf. Applied Climatology; classes: WMO (2012), SPI User Guide, WMO-No. 1090; Funk et al. (2015), Scientific Data 2:150066"
   },
   {
    "id": "rivers",

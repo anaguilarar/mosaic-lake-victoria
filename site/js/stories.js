@@ -1,10 +1,10 @@
 /* Uses & studies drawer: two tabs.
-   "Story" (default) - scroll-driven chapters from data/meta/story.json. A chapter entering the middle
+   "Story" (default) - scroll-driven chapters from data/meta/story_chapters.json. A chapter entering the middle
    of the drawer applies its map state (layer, climate time step, camera). Charts render inline from
    the app's served series; static figures (prep/90_story_figures.py) enlarge over the map on click.
    Rules carried in the registry: study numbers as printed (page recorded), app numbers labelled
    "this app's analysis", pending chapters show a placeholder.
-   "Studies" - the question cards (stories.json): published findings verified against the PDFs in
+   "Studies" - the question cards (data/meta/studies.json): published findings verified against the PDFs in
    bibliography/, or explore questions. "Show me on the map" applies the card's state and closes the
    drawer; the Story tab keeps the drawer open and repositions the legend and time bar instead. */
 
@@ -24,7 +24,7 @@ export async function init(hooks) {
   $("#storiesBtn").addEventListener("click", toggle);
   $("#storiesClose").addEventListener("click", () => setOpen(false));
   const grab = async (f) => { try { const r = await fetch(dataUrl("meta/" + f)); return r.ok ? r.json() : null; } catch { return null; } };
-  const [cards, story] = await Promise.all([grab("stories.json"), grab("story.json")]);
+  const [cards, story] = await Promise.all([grab("studies.json"), grab("story_chapters.json")]);
   state.stories = cards?.stories || [];
   state.chapters = story?.chapters || [];
   state.storyTitle = story?.title || "Story";
@@ -135,13 +135,13 @@ function render() {
 /* ---------------- story tab ---------------- */
 function renderStory(body) {
   if (!state.chapters.length) {
-    body.append(el("div", "empty", "No story registered yet (data/meta/story.json)."));
+    body.append(el("div", "empty", "No story registered yet (data/meta/story_chapters.json)."));
     return;
   }
   setHeader(1);
   for (const ch of state.chapters) body.append(chapterEl(ch));
   body.append(el("p", "stories-note",
-    "Study numbers are as printed in the cited papers (pages in story.json); " +
+    "Study numbers are as printed in the cited papers (pages in story_chapters.json); " +
     "“this app's analysis” numbers come from the app's own data (methods in the data report)."));
   body.append(el("div", "story-spacer"));   // lets the last chapter reach the trigger band
 
@@ -218,7 +218,7 @@ function chapterEl(ch) {
 }
 
 /* chapter 5: people in cells where water was detected in >= N years (series/flood_exposure.json, prep/13_exposure.py),
-   with N and the area chosen by the reader; label and note come from story.json */
+   with N and the area chosen by the reader; label and note come from story_chapters.json */
 async function exposureCounter(cfg, mount) {
   const s = await series("flood_exposure.json");
   const regions = Object.keys(s.regions);
@@ -364,8 +364,11 @@ async function buildChart(kind, mount) {
     const s = await series("spi3_basin.json");
     const keys = Object.keys(s.monthly).sort();
     const vals = keys.map((k) => s.monthly[k]);
+    const P = 3;   // the latest CHIRPS months are provisional: dashed, and named in the tooltip
     Charts.line(host("Basin-mean SPI-3, monthly"), { labels: yearLabels(keys), series: [{ name: "SPI-3", values: vals }],
       format: (v) => v.toFixed(2), tickFormat: (v) => v, height: 150, min: -3, max: 3,
+      today: keys.length - 1 - P, todayLabel: "provisional",
+      tipLabels: keys.map((k, i) => k + (i >= keys.length - P ? " · provisional" : "")),
       yTicks: [-3, -2, -1, 0, 1, 2, 3],
       annotations: [{ from: keys.indexOf("2019-10"), to: keys.indexOf("2020-07"), label: "2020 floods" },
                     { at: keys.indexOf("2024-05"), label: "2024 floods", short: "2024" }],
@@ -402,7 +405,7 @@ async function buildChart(kind, mount) {
 function renderStudies(body) {
   setHeader(0);
   if (!state.stories.length) {
-    body.append(el("div", "empty", "No studies registered yet (data/meta/stories.json)."));
+    body.append(el("div", "empty", "No studies registered yet (data/meta/studies.json)."));
     return;
   }
   const active = state.hooks.activeOverlay();
@@ -415,7 +418,7 @@ function renderStudies(body) {
   const hit = (s) => active && (s.layers || []).includes(active);
   for (const s of [...state.stories.filter(hit), ...state.stories.filter((s) => !hit(s))]) body.append(card(s));
   body.append(el("p", "stories-note",
-    "Published findings quote the cited paper (page and figure recorded in stories.json); " +
+    "Published findings quote the cited paper (page and figure recorded in studies.json); " +
     "explore cards are open questions, not claims."));
 }
 
