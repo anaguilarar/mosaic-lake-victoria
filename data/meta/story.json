@@ -295,7 +295,7 @@
     {
       "id": "gaps",
       "title": "What we cannot see yet",
-      "text": "Honest maps say where they end. The flood layers are under internal review before external use, and radar cannot assess floods everywhere - dense vegetation and towns hide them. Exposure counts await the approved sub-basins. Water quality is measurable from space in principle, but Warren et al. (2021) used no in-situ data for any of their 24 lakes, Lake Victoria included - field checks would come first.",
+      "text": "Honest maps say where they end. Radar cannot assess floods everywhere - dense vegetation and towns hide them. Water quality is measurable from space in principle, but Warren et al. (2021) used no in-situ data for any of their 24 lakes, Lake Victoria included - field checks would come first.",
       "status": "ready",
       "visual": {
         "type": "map",
