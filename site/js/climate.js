@@ -152,7 +152,8 @@ async function refresh(resetSlider = true) {
   const bi = years.indexOf(state.year);
   const band = stack.bands[bi];
   const { lo, hi, ramp, fmt, label } = displaySpec();
-  drawRaster(band, lo, hi, ramp);
+  // stored value = real value x scales[var] (precipitation totals in whole mm, temperatures x10)
+  drawRaster(band, lo, hi, ramp, 1 / (state.meta.scales?.[state.v] ?? 10));
   $("#timeLabel").innerHTML = `<strong>${state.year}</strong> · ${seasonName()} ${VARS[state.active].how}`;
   renderLegend(lo, hi, ramp, fmt, label);
   if (state.cell) showCell(state.cell.lngLat, false);
@@ -317,7 +318,8 @@ function drawRaster(band, lo, hi, ramp, scale = SCALE) {
       v *= scale;
       if (norm) {
         const n = norm[i];
-        if (n === NODATA) { v = null; } else { v = state.active === "precip" ? (100 * v) / (n * SCALE) : v - n * SCALE; }
+        // normals.tif is float32 in real units, NaN = nodata
+        if (!Number.isFinite(n)) { v = null; } else { v = state.active === "precip" ? (100 * v) / n : v - n; }
       }
       if (v != null) {
         const [r, g, b] = colToRgb(ramp, (v - lo) / (hi - lo));

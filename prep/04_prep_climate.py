@@ -4,13 +4,14 @@ Reads the daily Zarr stores on Hugging Face ONCE (offline step - the browser nev
 data) and writes small static files:
 
     climate/precip_monthly.tif     monthly totals, mm      (one band per month, 1981-01..end)
-    climate/precip_annual.tif      annual totals, mm       (complete years only)
-    climate/precip_seasonal.tif    MAM and OND totals per year, mm
-    climate/precip_anomaly.tif     annual anomaly vs 1991-2020 normal, mm
+    climate/precip_annual.tif      annual totals, whole mm  (complete years only)
+    climate/precip_seasonal.tif    MAM and OND totals per year, whole mm
+    climate/precip_anomaly.tif     annual anomaly vs 1991-2020 normal, whole mm
     climate/tmax_monthly.tif, tmin_monthly.tif   monthly means, degC; + annual means + anomalies
     series/precip_basin.json, temp_basin.json    basin-mean monthly/annual series for charts
 
-All rasters: EPSG:4326 at 0.05 deg, basin bbox (~133 x 106 px), int16 scaled (x0.1), nodata -32768,
+All rasters: EPSG:4326 at 0.05 deg, basin bbox (~133 x 106 px), int16 (monthly and temperatures x10,
+precipitation totals in whole mm - x10 overflows int16 above 3,276.7 mm), nodata -32768,
 tiled + DEFLATE, band descriptions = period labels. Registry entries included.
 
 Usage:  python 04_prep_climate.py [--only precip|temp]
@@ -27,7 +28,7 @@ from affine import Affine
 from rasterio.features import geometry_mask
 
 from prep_common import (BASIN_GPKG, BASIN_LAYER, BBOX, CHIRPS, CHIRTS, CLIMATE, NORMAL, SEASONS, SERIES,
-                         log, setup_logging, update_registry)
+                         check_encoding, log, setup_logging, update_registry)
 
 NODATA = -32768
 
@@ -63,9 +64,11 @@ def grid(da):
     return t, flip
 
 
-def write_stack(path, arr3d, labels, transform, units, scale=10):
-    """int16 x0.1 multiband GTiff with band descriptions."""
+def write_stack(path, arr3d, labels, transform, units, scale=10, nonneg=False):
+    """int16 multiband GTiff with band descriptions; stored value = real value x scale (tag
+    scale_factor = 1/scale). Precipitation totals use scale 1 (whole mm): x10 overflows int16."""
     a = np.where(np.isfinite(arr3d), np.round(arr3d * scale), NODATA).astype("i2")
+    check_encoding(path.name, arr3d, a, scale, nonneg)
     profile = dict(driver="GTiff", height=a.shape[1], width=a.shape[2], count=a.shape[0], dtype="int16",
                    crs="EPSG:4326", transform=transform, nodata=NODATA, tiled=True,
                    blockxsize=256, blockysize=256, compress="DEFLATE", predictor=2)
@@ -96,26 +99,8 @@ def process_precip():
     arr = mon.values if not flip else mon.values[:, ::-1, :]
     months_idx = pd.to_datetime(mon.time.values)
     labels = [f"{d:%Y-%m}" for d in months_idx]
-    write_stack(CLIMATE / "precip_monthly.tif", arr, labels, t, "mm/month")
-
-    years = sorted({d.year for d in months_idx})
-    full_years = [y for y in years if sum(d.year == y for d in months_idx) == 12]
-    ann = np.stack([arr[[i for i, d in enumerate(months_idx) if d.year == y]].sum(0) for y in full_years])
-    write_stack(CLIMATE / "precip_annual.tif", ann, [str(y) for y in full_years], t, "mm/year")
-
-    seas_arr, seas_lab = [], []
-    for sname, smonths in SEASONS.items():
-        for y in years:
-            idx = [i for i, d in enumerate(months_idx) if d.year == y and d.month in smonths]
-            if len(idx) == len(smonths):
-                seas_arr.append(arr[idx].sum(0))
-                seas_lab.append(f"{sname}-{y}")
-    write_stack(CLIMATE / "precip_seasonal.tif", np.stack(seas_arr), seas_lab, t, "mm/season")
-
-    normal_years = [y for y in full_years if NORMAL[0] <= y <= NORMAL[1]]
-    normal = ann[[full_years.index(y) for y in normal_years]].mean(0)
-    write_stack(CLIMATE / "precip_anomaly.tif", ann - normal, [str(y) for y in full_years], t,
-                f"mm/year vs {NORMAL[0]}-{NORMAL[1]} normal")
+    write_stack(CLIMATE / "precip_monthly.tif", arr, labels, t, "mm/month", nonneg=True)
+    full_years, ann = write_precip_totals(arr, labels, t)
 
     mask = basin_mask_for(da, t, False)
     if flip:
@@ -136,6 +121,44 @@ def process_precip():
         "source": "CHIRPS v3.0 daily, 0.05 deg", "period": f"{labels[0]} to {labels[-1]}",
         "units": "mm", "licence": "CC-BY-4.0",
         "citation": "Funk et al. (2015), Scientific Data 2:150066; CHIRPS v3.0, UCSB Climate Hazards Center"})
+
+
+def write_precip_totals(arr, labels, t):
+    """Annual and MAM/OND totals and the annual anomaly, in whole mm, from the monthly stack."""
+    months_idx = pd.to_datetime([lb + "-01" for lb in labels])
+    years = sorted({d.year for d in months_idx})
+    full_years = [y for y in years if sum(d.year == y for d in months_idx) == 12]
+    ann = np.stack([arr[[i for i, d in enumerate(months_idx) if d.year == y]].sum(0) for y in full_years])
+    write_stack(CLIMATE / "precip_annual.tif", ann, [str(y) for y in full_years], t, "mm/year",
+                scale=1, nonneg=True)
+
+    seas_arr, seas_lab = [], []
+    for sname, smonths in SEASONS.items():
+        for y in years:
+            idx = [i for i, d in enumerate(months_idx) if d.year == y and d.month in smonths]
+            if len(idx) == len(smonths):
+                seas_arr.append(arr[idx].sum(0))
+                seas_lab.append(f"{sname}-{y}")
+    write_stack(CLIMATE / "precip_seasonal.tif", np.stack(seas_arr), seas_lab, t, "mm/season",
+                scale=1, nonneg=True)
+
+    normal_years = [y for y in full_years if NORMAL[0] <= y <= NORMAL[1]]
+    normal = ann[[full_years.index(y) for y in normal_years]].mean(0)
+    write_stack(CLIMATE / "precip_anomaly.tif", ann - normal, [str(y) for y in full_years], t,
+                f"mm/year vs {NORMAL[0]}-{NORMAL[1]} normal", scale=1)
+    return full_years, ann
+
+
+def rebuild_totals():
+    """--rebuild-totals: regenerate the precipitation totals from the existing monthly stack
+    (no zarr download)."""
+    with rasterio.open(CLIMATE / "precip_monthly.tif") as r:
+        a = r.read().astype("f4")
+        labels = list(r.descriptions)
+        t = r.transform
+    a[a == NODATA] = np.nan
+    write_precip_totals(a / 10.0, labels, t)
+
 
 
 def process_temp():
@@ -183,8 +206,13 @@ def process_temp():
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--only", choices=["precip", "temp"])
+    ap.add_argument("--rebuild-totals", action="store_true",
+                    help="only regenerate the precipitation totals from the existing monthly stack")
     args = ap.parse_args()
     setup_logging()
+    if args.rebuild_totals:
+        rebuild_totals()
+        return
     if args.only in (None, "precip"):
         process_precip()
     if args.only in (None, "temp"):

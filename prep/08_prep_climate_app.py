@@ -3,9 +3,10 @@
 Reads climate/precip_monthly.tif, tmax_monthly.tif, tmin_monthly.tif (int16 x0.1, 0.05 deg) and the
 30 m GLO-30 WBM, and writes to data/climate/app/ and data/series/:
 
-    {var}_{annual|mam|ond}.tif      yearly stacks, complete years only (one band per year)
+    {var}_{annual|mam|ond}.tif      yearly stacks, complete years only (one band per year); int16,
+                                    precip in whole mm, temperatures x10 (scales in app_meta.json)
                                     var: precip (totals, mm), tmean/tmax/tmin (means, degC)
-    normals.tif                     1991-2020 normals: 12 bands (precip & tmean x annual/mam/ond
+    normals.tif                     1991-2020 normals, float32 real units: 6 bands (precip & tmean x annual/mam/ond
                                     + precip/tmean monthly handled via cell series)
     landmask.tif                    uint8: 1 land, 2 lake/river (WBM 30 m majority per 0.05 cell)
     precip_cells.bin, tmean_cells.bin   per-cell monthly series as flat int16 (x0.1), layout
@@ -22,11 +23,14 @@ import rasterio
 from rasterio.enums import Resampling
 from rasterio.warp import reproject
 
-from prep_common import CLIMATE, NORMAL, SEASONS, SERIES, WBM, log, setup_logging, update_registry
+from prep_common import CLIMATE, NORMAL, SEASONS, SERIES, WBM, check_encoding, log, setup_logging, update_registry
 
 APP = CLIMATE / "app"
 NODATA = -32768
 SEASON_MONTHS = {"annual": tuple(range(1, 13)), "mam": SEASONS["MAM"], "ond": SEASONS["OND"]}
+# stored value = real value x scale. Precipitation TOTALS in whole mm: annual and MAM totals exceed
+# int16 at x10 (3,276.7 mm) in the wettest cells; temperatures keep x10 (0.1 degC).
+SCALES = {"precip": 1, "tmean": 10, "tmax": 10, "tmin": 10}
 
 
 def read_stack(path):
@@ -36,8 +40,9 @@ def read_stack(path):
         return a / 10.0, [d for d in r.descriptions], r.transform, r.crs
 
 
-def write_tif(path, arr3d, labels, transform, units, scale=10):
+def write_tif(path, arr3d, labels, transform, units, scale=10, nonneg=False):
     a = np.where(np.isfinite(arr3d), np.round(np.asarray(arr3d) * scale), NODATA).astype("i2")
+    check_encoding(path.name, arr3d, a, scale, nonneg)
     prof = dict(driver="GTiff", height=a.shape[1], width=a.shape[2], count=a.shape[0], dtype="int16",
                 crs="EPSG:4326", transform=transform, nodata=NODATA, tiled=True, blockxsize=256,
                 blockysize=256, compress="DEFLATE", predictor=2)
@@ -47,6 +52,19 @@ def write_tif(path, arr3d, labels, transform, units, scale=10):
             dst.set_band_description(i, lb)
         dst.update_tags(units=units, scale_factor=str(1 / scale))
     log.info("wrote %s (%d bands)", path.name, len(labels))
+
+
+def write_float(path, arr3d, labels, transform, units):
+    a = np.asarray(arr3d, "f4")
+    prof = dict(driver="GTiff", height=a.shape[1], width=a.shape[2], count=a.shape[0], dtype="float32",
+                crs="EPSG:4326", transform=transform, nodata=float("nan"), tiled=True, blockxsize=256,
+                blockysize=256, compress="DEFLATE", predictor=3)
+    with rasterio.open(path, "w", **prof) as dst:
+        dst.write(a)
+        for i, lb in enumerate(labels, 1):
+            dst.set_band_description(i, lb)
+        dst.update_tags(units=units)
+    log.info("wrote %s (%d bands, float32)", path.name, len(labels))
 
 
 def yearly(monthly, labels, how, season):
@@ -97,7 +115,8 @@ def main():
             "bbox": [t.c, t.f + t.e * shape[0], t.c + t.a * shape[1], t.f],
             "scale": 0.1, "nodata": NODATA, "normal": f"{NORMAL[0]}-{NORMAL[1]}",
             "months": {"start": plabels[0], "n_precip": len(plabels), "n_tmean": n},
-            "ranges": {}, "years": {}}
+            "ranges": {}, "years": {},
+            "scales": dict(SCALES), "normals_encoding": "float32, nodata NaN, real units"}
 
     stacks = {"precip": (precip, plabels, "sum", "mm"),
               "tmean": (tmean, tlabels[:n], "mean", "degC"),
@@ -108,7 +127,8 @@ def main():
         for season in SEASON_MONTHS:
             arr, years = yearly(mon, labels, how, season)
             write_tif(APP / f"{var}_{season}.tif", arr, [str(y) for y in years], t,
-                      f"{units}/{'year' if season == 'annual' else season}")
+                      f"{units}/{'year' if season == 'annual' else season}",
+                      scale=SCALES[var], nonneg=(var == "precip"))
             meta["years"][f"{var}_{season}"] = years
             meta["ranges"][f"{var}_{season}"] = [round(v, 1) for v in p2p98(arr)]
             if var in ("precip", "tmean"):
@@ -122,11 +142,13 @@ def main():
                 else:
                     anom = arr - normals[-1]
                     meta["ranges"][f"tmean_{season}_anom"] = [round(v, 2) for v in p2p98(anom)]
-    write_tif(APP / "normals.tif", np.stack(normals), normal_labels, t, "per-variable units")
+    write_float(APP / "normals.tif", np.stack(normals), normal_labels, t,
+                "real units per band (mm totals, degC means); float32, nodata NaN")
 
     # per-cell monthly series, [row][col][month] so one range request = one cell
     for name, (mon, nm) in {"precip": (precip, len(plabels)), "tmean": (tmean, n)}.items():
         a = np.where(np.isfinite(mon), np.round(mon * 10), NODATA).astype("<i2")
+        check_encoding(f"{name}_cells.bin", mon, a, 10, nonneg=(name == "precip"))
         flat = np.ascontiguousarray(np.moveaxis(a, 0, -1))          # (row, col, month)
         (APP / f"{name}_cells.bin").write_bytes(flat.tobytes())
         log.info("wrote %s_cells.bin (%.1f MB, %d months/cell)", name, flat.nbytes / 1e6, nm)
@@ -157,7 +179,9 @@ def main():
         "title": "Precipitation (CHIRPS v3)", "group": "Climate", "type": "climate",
         "urls": {"app": "climate/app/", "series": "series/precip_basin.json"},
         "palette": {"value": "cividis reversed (dry yellow -> wet dark blue)", "anomaly": "BrBG centred 100%"},
-        "source": "CHIRPS v3.0 daily, 0.05 deg, ERA5-disaggregated", "period": f"1981-{meta['years']['precip_annual'][-1]}",
+        "source": "CHIRPS v3.0 daily, 0.05 deg. CHIRPS is a pentad product; daily values are pentad totals "
+                  "disaggregated with ECMWF ERA5 precipitation (the 'rnl' flavour).",
+        "period": f"1981-{meta['years']['precip_annual'][-1]}",
         "units": "mm", "licence": "CC-BY-4.0",
         "caveats": "Satellite rainfall over the lake surface is less reliable; basin means use land cells only.",
         "citation": "Funk et al. (2015), Scientific Data 2:150066; CHIRPS v3.0, UCSB Climate Hazards Center"})

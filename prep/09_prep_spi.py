@@ -20,7 +20,7 @@ import rasterio
 from scipy.stats import gamma as sgamma
 from scipy.stats import norm
 
-from prep_common import CLIMATE, NORMAL, SERIES, log, setup_logging, update_registry
+from prep_common import CLIMATE, NORMAL, SERIES, check_encoding, log, setup_logging, update_registry
 
 APP = CLIMATE / "app"
 NODATA = -32768
@@ -79,6 +79,7 @@ def main():
     out_labels = labels[WINDOW - 1:]
 
     enc = np.where(np.isfinite(spi), np.round(spi * 100), NODATA).astype("i2")
+    check_encoding("spi3.tif", spi, enc, 100)
     prof = dict(driver="GTiff", height=enc.shape[1], width=enc.shape[2], count=enc.shape[0],
                 dtype="int16", crs="EPSG:4326", transform=t, nodata=NODATA, tiled=True,
                 blockxsize=256, blockysize=256, compress="DEFLATE", predictor=2)
@@ -108,6 +109,7 @@ def main():
     qc = np.concatenate([qc_normal, qc_q0 * 100])
     qlabels = [f"normal_mm_{m:02d}" for m in range(1, 13)] + [f"q0_pct_{m:02d}" for m in range(1, 13)]
     qenc = np.where(np.isfinite(qc), np.round(qc * 10), NODATA).astype("i2")
+    check_encoding("spi3_qc.tif", qc, qenc, 10, nonneg=True)
     with rasterio.open(APP / "spi3_qc.tif", "w", **{**prof, "count": 24}) as dst:
         dst.write(qenc)
         for i, lb in enumerate(qlabels, 1):
@@ -141,10 +143,12 @@ def main():
                  "series": "series/spi3_basin.json"},
         "palette": {"value": "BrBG diverging, centred 0, fixed -3..3 (values clipped to ±3)"},
         "source": "SPI-3 computed from CHIRPS v3.0 monthly totals (gamma fit, Thom 1958; "
-                  f"zero-rain mixed distribution), calibration {NORMAL[0]}-{NORMAL[1]}",
+                  f"zero-rain mixed distribution), calibration {NORMAL[0]}-{NORMAL[1]}. Daily CHIRPS = "
+                  "ERA5-disaggregated pentads ('rnl'); monthly totals are unaffected by the disaggregation choice.",
         "period": f"{out_labels[0]} to {out_labels[-1]}", "units": "SPI (unitless)",
         "licence": "Derived from CHIRPS v3.0 (CC-BY-4.0)",
         "citation": "McKee, Doesken & Kleist (1993), 8th Conf. Applied Climatology; "
+                    "classes: WMO (2012), SPI User Guide, WMO-No. 1090; "
                     "Funk et al. (2015), Scientific Data 2:150066"})
 
 

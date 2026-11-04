@@ -63,6 +63,35 @@ def setup_logging():
         d.mkdir(parents=True, exist_ok=True)
 
 
+# ----------------------------------------------------------------- encoding guard
+
+def check_encoding(name, arr3d, enc, scale, nonneg=False):
+    """Fail the step if an int16 encoding lost information: values beyond the int16 range at this
+    scale, encoded values at the ceiling/floor, negative values where the variable cannot be
+    negative, or a decoded maximum that differs from the float maximum by more than half a step.
+    (2026-11-04: annual/MAM precipitation x10 overflowed int16 above 3,276.7 mm and wrapped negative;
+    same guard as the Ucayali pipeline's common.check_encoding.)"""
+    import numpy as np
+    f = np.asarray(arr3d, "f8")
+    ok = np.isfinite(f)
+    e = np.asarray(enc)[ok].astype("i8")
+    lo, hi = np.iinfo("i2").min, np.iinfo("i2").max
+    problems = []
+    big = np.abs(np.round(f[ok] * scale)) >= hi
+    if big.any():
+        problems.append(f"{int(big.sum())} values beyond the int16 range (|v|*{scale} >= {hi}); "
+                        f"max |v| = {np.nanmax(np.abs(f)):.1f}")
+    if (e >= hi).any() or (e <= lo).any():
+        problems.append("encoded values at the int16 ceiling/floor")
+    if nonneg and (e < 0).any():
+        problems.append(f"{int((e < 0).sum())} negative encoded values in a non-negative variable")
+    if ok.any() and abs(e.max() / scale - f[ok].max()) > 0.5 / scale + 1e-6:
+        problems.append(f"decoded max {e.max() / scale:.2f} != float max {f[ok].max():.2f}")
+    if problems:
+        raise SystemExit(f"{name}: encoding check FAILED - " + "; ".join(problems))
+    log.info("%s: encoding check ok (scale x%s, decoded max %.1f)", name, scale, e.max() / scale)
+
+
 # ----------------------------------------------------------------- layer registry
 
 def update_registry(layer_id: str, entry: dict):
@@ -76,7 +105,7 @@ def update_registry(layer_id: str, entry: dict):
         reg["layers"][ids.index(layer_id)] = entry
     else:
         reg["layers"].append(entry)
-    path.write_text(json.dumps(reg, indent=1), encoding="utf-8")
+    path.write_text(json.dumps(reg, indent=1, ensure_ascii=False), encoding="utf-8")   # keep © ± – literal
     log.info("registry updated: %s", layer_id)
 
 
